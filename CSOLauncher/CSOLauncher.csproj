@@ -72,7 +72,8 @@
     Explorer "Package and Publish" context menu entry to be enabled for this project even if
     the Windows App SDK Nuget package has not yet been restored.
   -->
-  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+	<PublishAot>true</PublishAot>
   </PropertyGroup>
 </Project>

@@ -1,6 +1,7 @@
 using CSODataCore;
 using Microsoft.UI.Xaml;
 using System;
+using System.Linq;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 
@@ -13,26 +14,20 @@ namespace CSOLauncher
             ItemManager.ImportItem(@"D:\CSNZ\Server\Data\item.csv");
             ItemManager.ImportLanguage(@"D:\CSNZ\Server\Data\cso_na_en.txt");
             ItemManager.ImportReinforce(@"D:\CSNZ\Server\Data\ReinforceMaxLv.csv");
+            ItemManager.ImportPaints(@"D:\CSNZ\Server\WeaponPaints.json");
             ItemManager.LoadLanguage();
             this.InitializeComponent();
             Border.Source = Launcher.Assets["itembox_gold"];
             Weapon.Source = Launcher.Assets["ak47"];
             Team.Source = Launcher.Assets["teamtype0"];
             Part.Source = Launcher.Assets["partsweapon_icon"];
-            Part1.Source = Launcher.Assets["empty_slot"];
-            Part2.Source = Launcher.Assets["empty_slot"];
             Enchant.Source = Launcher.Assets["enchant"];
         }
 
-        private void MyButton_Click(object sender, RoutedEventArgs e)
+        private void SearchButton(object sender, RoutedEventArgs e)
         {
-            Team.Source = Launcher.Assets["btn_default@n_50"];
-        }
-
-        private void MyButton2_Click(object sender, RoutedEventArgs e)
-        {
-            Item[] items = ItemManager.Search(int.Parse(Search.Text));
-            Context.Text = items[0].TransName + "√Ë ˆ";
+            Item[] items = ItemManager.Search(int.Parse(Seachitem.Text));
+            Name.Text = items[0].WeaponInfomation.Paints.Length.ToString();
         }
 
         private async void SelectFileButton_Click(object sender, RoutedEventArgs e)

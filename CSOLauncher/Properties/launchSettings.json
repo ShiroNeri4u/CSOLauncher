@@ -1,9 +1,9 @@
 {
   "profiles": {
-    "CSNZEditor (Package)": {
+    "CSOLauncher (Package)": {
       "commandName": "MsixPackage"
     },
-    "CSNZEditor (Unpackaged)": {
+    "CSOLauncher (Unpackaged)": {
       "commandName": "Project"
     }
   }

@@ -1,8 +1,9 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Globalization;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace CSODataCore
@@ -324,7 +325,7 @@ namespace CSODataCore
     /// <summary>
     /// 武器配件类型
     /// </summary>
-    public enum Part : byte
+    public enum ItemPart : byte
     {
         /// <summary>
         /// 不开放配件
@@ -481,7 +482,7 @@ namespace CSODataCore
         /// <summary>
         /// 武器配件类型
         /// </summary>
-        public Part Part { get; set; }
+        public ItemPart Part { get; set; }
         /// <summary>
         /// 武器涂装
         /// </summary>
@@ -539,12 +540,6 @@ namespace CSODataCore
         /// +9终极提升类型
         /// </summary>
         public byte? OverDmg { get; set; }
-    }
-
-    public sealed class PaintJson
-    {
-        public byte Verion { get; set; }
-        public required Dictionary<int, int[]> PaintInfos { get; set; }
     }
 
     public class CostomConverter<T> : DefaultTypeConverter
@@ -747,10 +742,50 @@ namespace CSODataCore
                 }
             }
         }
+
         public static void ImportPaints(string filePath)
         {
             string jsonString = File.ReadAllText(filePath);
-            var paintJson = JsonSerializer.Deserialize<PaintJson>(jsonString);
+            var jObj = JsonConvert.DeserializeObject(jsonString);
+            if(jObj != null)
+            {
+                JObject jObjRoot = (JObject)jObj;
+                foreach (var x in jObjRoot)
+                {
+                    List<Item> items = [];
+                    if (x.Key != "Version")
+                    {
+                        var jObjs = jObjRoot[x.Key];
+                        if (jObjs != null)
+                        {
+                            JObject jObjSummary = (JObject)jObjs;
+                            var id = int.Parse(x.Key);
+                            var item = ItemDictionary[id];
+                            var jObjt = jObjSummary["Paints"];
+                            if (item.WeaponInfomation != null && jObjt != null)
+                            {
+                                item.WeaponInfomation.Paints = jObjt.ToObject<int[]>();
+                                var info = item.WeaponInfomation.Paints;
+                                if (info != null )
+                                {
+                                    foreach (int i in info)
+                                    {
+                                        if (PaintDictionary.TryGetValue(i, out _))
+                                        {
+                                            PaintDictionary[i].Add(ItemDictionary[id]);
+                                        }
+                                        else
+                                        {
+                                            PaintDictionary.Add(i, []);
+                                            PaintDictionary[i].Add(ItemDictionary[id]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public static void ImportLanguage(string filePath)
