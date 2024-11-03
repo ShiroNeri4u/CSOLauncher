@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application
+    x:Class="CSOLauncher.Launcher"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CSOLauncher">
+    <Application.Resources>
+        <ResourceDictionary>
+            <FontIconSource x:Key="OutlineStar" Glyph="&#xE734;"/>
+            <FontIconSource x:Key="SolidStar" Glyph="&#xE735;"/>
+            <FontIconSource x:Key="Filter" Glyph="&#xE71C;"/>
+            <FontIconSource x:Key="Library" Glyph="&#xE8F1;"/>
+            <FontIconSource x:Key="Repair" Glyph="&#xE90F;"/>
+            <FontIconSource x:Key="Highlight" Glyph="&#xE7E6;"/>
+            <FontIconSource x:Key="Delete" Glyph="&#xE74D;"/>
+            <FontIconSource x:Key="Sort" Glyph="&#xE8CB;"/>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <!-- Other merged dictionaries here -->
+            </ResourceDictionary.MergedDictionaries>
+            <!-- Other app resources here -->
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

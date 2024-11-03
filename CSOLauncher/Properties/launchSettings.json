@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CSNZEditor (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "CSNZEditor (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
