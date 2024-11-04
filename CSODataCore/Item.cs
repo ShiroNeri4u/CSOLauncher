@@ -359,7 +359,7 @@ namespace CSODataCore
         {
             Map(m => m.Id).Index(0);
             Map(m => m.Name).Index(1);
-            Map(m => m.RecourceName).Index(2);
+            Map(m => m.ResourceName).Index(2);
             Map(m => m.Team).Index(7);
             Map(m => m.Period).Index(27);
             Map(m => m.InGameItem).Index(35);
@@ -385,7 +385,7 @@ namespace CSODataCore
         /// <summary>
         /// 资源Id
         /// </summary>
-        public string? RecourceName { get; set; }
+        public string? ResourceName { get; set; }
         /// <summary>
         /// 使用阵营
         /// </summary>
@@ -595,6 +595,12 @@ namespace CSODataCore
         private static readonly Dictionary<string, List<int>> StringToId = [];
         private static readonly Dictionary<int, List<Item>> PaintDictionary = [];
         private static readonly Dictionary<int, Item> ReinforceDictionary = [];
+        private static readonly Dictionary<ItemPart, List<Item>> PartDictionary = new()
+        {
+            { ItemPart.WeaponType, new List<Item>() },
+            { ItemPart.KnifeType, new List<Item>() },
+            { ItemPart.SpecialType, new List<Item>() },
+        };
         private static readonly Dictionary<ItemGrade, List<Item>> ItemGradeDictionary = new()
         {
             { ItemGrade.None, new List<Item>() },
@@ -606,7 +612,6 @@ namespace CSODataCore
             { ItemGrade.Legendary, new List<Item>() },
             { ItemGrade.Special, new List<Item>() },
         };
-        private static readonly Dictionary<string, string> LanguageDictionary = new(StringComparer.OrdinalIgnoreCase);
         private static readonly Dictionary<ItemSortingIndex, List<Item>> SortIndexDictionary = new()
         {
             { ItemSortingIndex.BoxWeapon, new List<Item>() },
@@ -661,7 +666,10 @@ namespace CSODataCore
             { ItemSortingIndex.CreatorLicense, new List<Item>() },
             { ItemSortingIndex.CreatorItem, new List<Item>() },
         };
-
+        private static readonly Dictionary<string, string> LanguageDictionary = new(StringComparer.OrdinalIgnoreCase);
+        private static int[] WeaponTypeFilter = [4001, 4002, 4003, 4004, 4005, 4601];
+        private static int[] KnifeTypeFilter = [4081, 4082, 4083, 4084, 4085, 4616];
+        private static int[] SpecialTypeFilter = [4086, 4087, 4088, 4089, 4090, 4617, 4091, 4092, 4093, 4094, 4095, 4618];
         /// <summary>
         /// 导入item.csv路径 <see cref="string"/> 的值
         /// </summary>
@@ -707,6 +715,27 @@ namespace CSODataCore
                     {
                         byte num = (byte)item.ItemGrade;
                         ItemGradeDictionary[(ItemGrade)num].Add(item);
+                    }
+                    if (item.SortingIndex == ItemSortingIndex.WeaponPart)
+                    {
+                        if (Array.IndexOf(WeaponTypeFilter, item.Id) > 0)
+                        {
+                            PartDictionary[ItemPart.WeaponType].Add(item);
+                        }
+                        else if (Array.IndexOf(KnifeTypeFilter, item.Id) > 0)
+                        {
+                            PartDictionary[ItemPart.KnifeType].Add(item);
+                        }
+                        else if (Array.IndexOf(SpecialTypeFilter, item.Id) > 0)
+                        {
+                            PartDictionary[ItemPart.SpecialType].Add(item);
+                        }
+                        else
+                        {
+                            PartDictionary[ItemPart.WeaponType].Add(item);
+                            PartDictionary[ItemPart.KnifeType].Add(item);
+                            PartDictionary[ItemPart.SpecialType].Add(item);
+                        }
                     }
                     SortIndexDictionary[item.SortingIndex].Add(item);
                 }
@@ -836,7 +865,7 @@ namespace CSODataCore
             Dictionary<int, Item> items = ItemDictionary;
             foreach (Item item in items.Values)
             {
-                string name = PreName + item.RecourceName;
+                string name = PreName + item.ResourceName;
                 if (trans.TryGetValue(name, out var _name))
                 {
                     List<int> index = [item.Id];

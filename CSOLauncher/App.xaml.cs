@@ -1,12 +1,15 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CSODataCore;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.Foundation.Diagnostics;
 using Windows.Storage;
 using Windows.Storage.Search;
 using Windows.Storage.Streams;
@@ -28,32 +31,37 @@ namespace CSOLauncher
 
         public static readonly Dictionary<string, WriteableBitmap> Assets = [];
 
+        private static readonly List<Task> LoadAssetsTask = [];
+
+        private static readonly string[] Folders = ["Common", "zh-cn"];
         private static async Task LoadAssets()
         {
             StorageFolder InstalledLocation = Package.Current.InstalledLocation;
             StorageFolder AssetsFolder = await InstalledLocation.GetFolderAsync("Assets");
             StorageFolder CSOFolder = await AssetsFolder.GetFolderAsync("CSO");
-            StorageFolder CommonFolder = await CSOFolder.GetFolderAsync("Common");
-            StorageFolder LocalizationFolder = await CSOFolder.GetFolderAsync("zh-cn");
-            List<Task> tasks = [];
-            tasks.Add(FindTgaUri(CommonFolder, InstalledLocation.Path));
-            tasks.Add(FindTgaUri(LocalizationFolder, InstalledLocation.Path));
-            await Task.WhenAll(tasks);
+            foreach( string folder in Folders)
+            {
+                StorageFolder Folder = await CSOFolder.GetFolderAsync(folder);
+                LoadAssetsTask.Add(FindTgaUri(Folder, InstalledLocation.Path));
+            }
+            await Task.WhenAll(LoadAssetsTask);
         }
 
         private async static Task FindTgaUri(StorageFolder folder, string basePath)
         {
             List<Task> tasks = [];
-            var files = await folder.GetFilesAsync(CommonFileQuery.OrderByName);
-            foreach (var file in files)
+            string[] files = Directory.GetFiles(folder.Path);
+            foreach (string file in files)
             {
-                if (file.FileType.Equals(".tga", StringComparison.OrdinalIgnoreCase))
-                {
-                    string relativePath = file.Path.Replace(basePath, "").TrimStart(System.IO.Path.DirectorySeparatorChar);
-                    Uri fileUri = new($"ms-appx:///{relativePath}");
-                    Task task = LoadTgaImageAsync(fileUri);
-                    tasks.Add(task);
-                }
+                string relativePath = file.Replace(basePath, "").TrimStart(System.IO.Path.DirectorySeparatorChar);
+                Uri fileUri = new($"ms-appx:///{relativePath}");
+                Task task = LoadTgaImageAsync(fileUri);
+                tasks.Add(task);
+            }
+            IReadOnlyList<StorageFolder> folders = await folder.GetFoldersAsync();
+            foreach (StorageFolder nextfolder in folders)
+            {
+                tasks.Add(FindTgaUri(nextfolder, basePath));
             }
             await Task.WhenAll(tasks);
         }
@@ -61,7 +69,7 @@ namespace CSOLauncher
         private async static Task LoadTgaImageAsync(Uri uri)
         {
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-            
+            Debug.WriteLine(file.Path);
             using IRandomAccessStream stream = await file.OpenReadAsync();
             using MemoryStream memstream = new();
             using SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(Options, stream.AsStreamForRead());
@@ -78,6 +86,11 @@ namespace CSOLauncher
         {
             Task task = LoadAssets();
             await task;
+            ItemManager.ImportItem(@"D:\CSNZ\Server\Data\item.csv");
+            ItemManager.ImportLanguage(@"D:\CSNZ\Server\Data\cso_na_en.txt");
+            ItemManager.ImportReinforce(@"D:\CSNZ\Server\Data\ReinforceMaxLv.csv");
+            ItemManager.ImportPaints(@"D:\CSNZ\Server\WeaponPaints.json");
+            ItemManager.LoadLanguage();
             m_window = new MainWindow();
             m_window.Activate();
         }

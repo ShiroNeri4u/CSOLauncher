@@ -14,24 +14,21 @@ namespace CSOLauncher
 {
     public sealed partial class CSOButton : UserControl
     {
-        private const string Left = "left@";
-        private const string Center = "center@";
-        private const string Right = "right@";
         private const string ButtonPre = "btn";
+        private static readonly string[] Position = ["left@", "center@", "right@"];
         private const string Underline = "_";
         private const string At = "@";
-        private const string Default = "default";
-        private const string Invensort = "invensort";
-        private const string InvensortOff = "invensort_off";
+        private static readonly string[] Type = ["default" , "invensort" , "invensort_off"];
         private const int ButtonHeight = 32;
         private const int ButtonHeightFix = 30;
         private const int ButtonSingleWidth = 10;
         private const int ButtonSingleFixWidth = 8;
         private const int FontHeight = 20;
+        private const int Pixelbyte = 4;
         private int Count;
         private readonly static Dictionary<string, Task> ConventTask = [];
 
-        public enum Type : int
+        public enum EType : int
         {
             Default = 0,
             Invensort = 1,
@@ -50,13 +47,7 @@ namespace CSOLauncher
 
         private async void GetAssets()
         {
-            string type = (Type)ButtonType switch
-            {
-                Type.Default => Default,
-                Type.Invensort => Invensort,
-                Type.InvensortOff => InvensortOff,
-                _ => Default,
-            };
+            string type = Type[ButtonType];
             List<Task> tasks = [];
             int width = Math.Clamp(ButtonWidth, 21, int.MaxValue);
             foreach (string status in Status)
@@ -85,11 +76,11 @@ namespace CSOLauncher
 
         private void TweakWidthHeghit()
         {
-            int height = (Type)ButtonType switch
+            int height = (EType)ButtonType switch
             {
-                Type.Default => ButtonHeight,
-                Type.Invensort => ButtonHeightFix,
-                Type.InvensortOff => ButtonHeightFix,
+                EType.Default => ButtonHeight,
+                EType.Invensort => ButtonHeightFix,
+                EType.InvensortOff => ButtonHeightFix,
                 _ => ButtonHeight,
             };
             int width = Math.Clamp(ButtonWidth, 21, int.MaxValue);
@@ -129,9 +120,9 @@ namespace CSOLauncher
                 rightwidth = ButtonSingleFixWidth;
             }
             WriteableBitmap bitmap = new(width, height);
-            WriteableBitmap leftbitmap = Launcher.Assets[ButtonPre + Underline + type + Underline + Left + status];
-            WriteableBitmap centerbitmap = Launcher.Assets[ButtonPre + Underline + type + Underline + Center + status];
-            WriteableBitmap rightbitmap = Launcher.Assets[ButtonPre + Underline + type + Underline + Right + status];
+            WriteableBitmap leftbitmap = Launcher.Assets[ButtonPre + Underline + type + Underline + Position[0] + status];
+            WriteableBitmap centerbitmap = Launcher.Assets[ButtonPre + Underline + type + Underline + Position[1] + status];
+            WriteableBitmap rightbitmap = Launcher.Assets[ButtonPre + Underline + type + Underline + Position[2] + status];
             int repeatcount = width - ButtonSingleWidth - ButtonSingleFixWidth;
             byte[] left = leftbitmap.PixelBuffer.ToArray();
             byte[] center = centerbitmap.PixelBuffer.ToArray();
@@ -144,11 +135,11 @@ namespace CSOLauncher
             for (int i = 0; i < height; i++)
             {
                 //左边部分
-                for (int l = leftpixelindex; l < leftpixelindex + 4 * leftwidth; l++)
+                for (int l = leftpixelindex; l < leftpixelindex + Pixelbyte * leftwidth; l++)
                 {
                     buffer.Add(left[l]);
                 }
-                leftpixelindex += 4 * leftwidth;
+                leftpixelindex += Pixelbyte * leftwidth;
                 //中间填充部分
                 for (int c = 0; c < repeatcount; c++ )
                 {
@@ -157,16 +148,16 @@ namespace CSOLauncher
                     buffer.Add(center[centerpixelindex + 2]);
                     buffer.Add(center[centerpixelindex + 3]);
                 }
-                centerpixelindex += 4;
+                centerpixelindex += Pixelbyte;
                 //右边部分(并舍弃部分)
-                for (int r = rightpixelindex; r < rightpixelindex + 4 * leftwidth; r++)
+                for (int r = rightpixelindex; r < rightpixelindex + Pixelbyte * leftwidth; r++)
                 {
-                    if(r < rightpixelindex + 4 * rightwidth)
+                    if(r < rightpixelindex + Pixelbyte * rightwidth)
                     {
                         buffer.Add(right[r]);
                     }
                 }
-                rightpixelindex += 4 * leftwidth;
+                rightpixelindex += Pixelbyte * leftwidth;
             }
             byte[] bytes = [.. buffer];
             using (Stream pixelstream = bitmap.PixelBuffer.AsStream())
@@ -223,11 +214,11 @@ namespace CSOLauncher
             typeof(CSOButton),
             new PropertyMetadata(default(string),
                 static (DependencyObject obj, DependencyPropertyChangedEventArgs e) =>
-                    {
-                        var self = obj as CSOButton;
-                        self.ButtonText.Text = e.NewValue as string;
-                    }
-                )
+                {
+                    var self = obj as CSOButton;
+                    self.ButtonText.Text = e.NewValue as string;
+                }
+            )
         );
 
         public static readonly DependencyProperty TextColorProperty = DependencyProperty.Register(

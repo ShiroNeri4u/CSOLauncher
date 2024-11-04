@@ -14,8 +14,11 @@
     <DefaultLanguage>zh-cn</DefaultLanguage>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
   </PropertyGroup>
+
   <ItemGroup>
     <None Remove="CSOButton.xaml" />
+    <None Remove="CSOCustomStyle.xaml" />
+    <None Remove="CSOFlyoutBase.xaml" />
     <None Remove="ItemView.xaml" />
     <None Remove="PartButton.xaml" />
   </ItemGroup>
@@ -50,6 +53,16 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSODataCore\CSODataCore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="CSOCustomStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="CSOFlyoutBase.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="PartButton.xaml">

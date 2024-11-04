@@ -16,6 +16,7 @@
     PointerExited="OnPointerExited"
     PointerCanceled="OnPointerCanceled"
     PointerCaptureLost="OnPointerCaptureLost"
+    PointerMoved="OnPointerMoved"
     >
 
         <Image x:Name="BackGround" Stretch="None" Width="32" Height="32">
