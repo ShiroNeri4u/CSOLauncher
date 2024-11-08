@@ -5,13 +5,10 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.Foundation.Diagnostics;
 using Windows.Storage;
-using Windows.Storage.Search;
 using Windows.Storage.Streams;
 
 namespace CSOLauncher
@@ -69,16 +66,16 @@ namespace CSOLauncher
         private async static Task LoadTgaImageAsync(Uri uri)
         {
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-            Debug.WriteLine(file.Path);
+            string resourcesname = System.IO.Path.GetFileNameWithoutExtension(uri.LocalPath);
             using IRandomAccessStream stream = await file.OpenReadAsync();
             using MemoryStream memstream = new();
             using SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(Options, stream.AsStreamForRead());
             {
-                image.SaveAsPng(memstream);
                 WriteableBitmap bitmap = new(image.Width, image.Height);
+                image.SaveAsPng(memstream);
                 memstream.Seek(0, SeekOrigin.Begin);
                 bitmap.SetSource(memstream.AsRandomAccessStream());
-                Assets.Add(System.IO.Path.GetFileNameWithoutExtension(uri.LocalPath), bitmap);
+                Assets.Add(resourcesname, bitmap);
             }
         }
 

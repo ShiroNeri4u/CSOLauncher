@@ -21,13 +21,9 @@ namespace CSOLauncher
             Name.Text = items[0].TransName;
         }
 
-        private void SearchButton(object sender, RoutedEventArgs e)
-        {
-            Item[] items = ItemManager.Search(int.Parse(Seachitem.Text));
-            Name.Text = items[0].TransName;
-        }
+       
 
-        private async Task SelectFileButton_Click(object sender, RoutedEventArgs e)
+        private async void SelectFileButton_Click(object sender, RoutedEventArgs e)
         {
             nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(Launcher.FileView);
 
@@ -44,7 +40,6 @@ namespace CSOLauncher
             if (file != null)
             {
                 string filePath = file.Path;
-                LangFile.Text = filePath;
             }
         }
 

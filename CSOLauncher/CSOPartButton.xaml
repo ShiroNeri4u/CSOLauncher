@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UserControl
-    x:Class="CSOLauncher.PartButton"
+    x:Class="CSOLauncher.CSOPartButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:CSOLauncher"
@@ -9,7 +9,6 @@
     mc:Ignorable="d">
 
     <Grid Width="32" Height="32"
-    x:Name="Button"
     PointerEntered="OnPointerEntered"
     PointerPressed="OnPointerPressed"
     PointerReleased="OnPointerReleased"
@@ -19,8 +18,10 @@
     PointerMoved="OnPointerMoved"
     >
 
-        <Image x:Name="BackGround" Stretch="None" Width="32" Height="32">
-        </Image>
+        <Grid.Background>
+            <ImageBrush Stretch="None" ImageSource="{x:Bind CurrentBackground, Mode=OneWay}"></ImageBrush>
+        </Grid.Background>
+        <local:CSOPartFlyout x:Name="CSOFlyout" FlyoutWidth="245" CurrentColor="Grey"></local:CSOPartFlyout>
     </Grid>
 
 </UserControl>

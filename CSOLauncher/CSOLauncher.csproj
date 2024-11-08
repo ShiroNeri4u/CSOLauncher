@@ -16,11 +16,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="CSOButton.xaml" />
-    <None Remove="CSOCustomStyle.xaml" />
-    <None Remove="CSOFlyoutBase.xaml" />
+    <None Remove="CSOButtonBase.xaml" />
+    <None Remove="CSOPartButton.xaml" />
+    <None Remove="CSOPartFlyout.xaml" />
+    <None Remove="Font.xaml" />
     <None Remove="ItemView.xaml" />
-    <None Remove="PartButton.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,27 +55,27 @@
     <ProjectReference Include="..\CSODataCore\CSODataCore.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="CSOCustomStyle.xaml">
+    <Page Update="CSOButtonBase.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="CSOFlyoutBase.xaml">
+    <Page Update="Font.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="PartButton.xaml">
+    <Page Update="CSOPartFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="CSOPartButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="ItemView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="CSOButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

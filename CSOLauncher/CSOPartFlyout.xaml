@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CSOLauncher.CSOPartFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CSOLauncher"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Popup IsOpen="{x:Bind IsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind HorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind VerticalOffset, Mode=OneWay}" AllowFocusOnInteraction="False" AllowFocusWhenDisabled="False">
+        <Grid Width="{x:Bind FlyoutWidth, Mode=OneWay}" Height="{x:Bind FlyoutHeight, Mode=OneWay}">
+            <Grid.Background>
+                <ImageBrush Stretch="None" ImageSource="{x:Bind CurrentBackground, Mode=OneWay}"></ImageBrush>
+            </Grid.Background>
+            <StackPanel Orientation="Vertical" Margin="12,12,12,17">
+                <TextBlock
+                        Text="{x:Bind PartName, Mode=OneWay}" 
+                        Foreground="White" 
+                        FontFamily="{StaticResource CSOFont}" 
+                        CharacterSpacing="50" 
+                        TextDecorations="Underline" 
+                        FontSize="13.0"
+                        Visibility="{x:Bind IsEmpty}"
+                        Margin="0,0,0,15"/>
+                <TextBlock
+                        Text="{x:Bind PartDesc, Mode=OneWay}" 
+                        Foreground="#a8a8a8" 
+                        FontFamily="{StaticResource CSOFont}" 
+                        CharacterSpacing="50" 
+                        FontSize="12.0"
+                        TextWrapping="WrapWholeWords"/>
+            </StackPanel>
+        </Grid>
+    </Popup>
+</UserControl>

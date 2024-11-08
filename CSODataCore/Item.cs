@@ -590,6 +590,7 @@ namespace CSODataCore
 
     public static partial class ItemManager
     {
+        public static readonly Item NullItem = new();
         private const string PreName = "CSO_Item_Name_";
         private static readonly Dictionary<int, Item> ItemDictionary = [];
         private static readonly Dictionary<string, List<int>> StringToId = [];
@@ -666,7 +667,7 @@ namespace CSODataCore
             { ItemSortingIndex.CreatorLicense, new List<Item>() },
             { ItemSortingIndex.CreatorItem, new List<Item>() },
         };
-        private static readonly Dictionary<string, string> LanguageDictionary = new(StringComparer.OrdinalIgnoreCase);
+        public static readonly Dictionary<string, string> LanguageDictionary = new(StringComparer.OrdinalIgnoreCase);
         private static int[] WeaponTypeFilter = [4001, 4002, 4003, 4004, 4005, 4601];
         private static int[] KnifeTypeFilter = [4081, 4082, 4083, 4084, 4085, 4616];
         private static int[] SpecialTypeFilter = [4086, 4087, 4088, 4089, 4090, 4617, 4091, 4092, 4093, 4094, 4095, 4618];
