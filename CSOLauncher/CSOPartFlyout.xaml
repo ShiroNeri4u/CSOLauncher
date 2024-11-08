@@ -22,7 +22,7 @@
                         TextDecorations="Underline" 
                         FontSize="13.0"
                         Visibility="{x:Bind IsEmpty}"
-                        Margin="0,0,0,15"/>
+                        Margin="0,0,0,12"/>
                 <TextBlock
                         Text="{x:Bind PartDesc, Mode=OneWay}" 
                         Foreground="#a8a8a8" 

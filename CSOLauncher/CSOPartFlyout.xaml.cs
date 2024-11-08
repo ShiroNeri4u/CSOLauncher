@@ -14,7 +14,6 @@ namespace CSOLauncher
     public sealed partial class CSOPartFlyout : UserControl
     {
         private const string NewLine = "\n";
-        private int LoadCount = 0;
         private bool LoadColor = false;
         private bool LoadWidth = false;
         private bool LoadHeight = false;
@@ -79,7 +78,7 @@ namespace CSOLauncher
             set => SetValue(PartItemProperty, value);
         }
 
-        public Visibility IsEmpty
+        private Visibility IsEmpty
         {
             get => (Visibility)GetValue(IsEmptyProperty);
             set => SetValue(IsEmptyProperty, value);
@@ -88,7 +87,6 @@ namespace CSOLauncher
         public CSOPartFlyout()
         {
             InitializeComponent();
-            PartItem = ItemManager.NullItem;
         }
 
         private void OnLoad()
@@ -101,28 +99,28 @@ namespace CSOLauncher
             CurrentBackground = Launcher.Assets[taskname];
         }
 
-        public static readonly DependencyProperty IsOpenProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty IsOpenProperty = DependencyProperty.Register(
             nameof(IsOpen),
             typeof(double),
             typeof(CSOPartFlyout),
             new PropertyMetadata(false)
         );
 
-        public static readonly DependencyProperty HorizontalOffsetProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty HorizontalOffsetProperty = DependencyProperty.Register(
             nameof(HorizontalOffset),
             typeof(double),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null)
         );
 
-        public static readonly DependencyProperty VerticalOffsetProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty VerticalOffsetProperty = DependencyProperty.Register(
             nameof(VerticalOffset),
             typeof(double),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null)
         );
 
-        public static readonly DependencyProperty FlyoutWidthProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty FlyoutWidthProperty = DependencyProperty.Register(
             nameof(FlyoutWidth),
             typeof(int),
             typeof(CSOPartFlyout),
@@ -139,7 +137,7 @@ namespace CSOLauncher
             )
         );
 
-        public static readonly DependencyProperty FlyoutHeightProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty FlyoutHeightProperty = DependencyProperty.Register(
             nameof(FlyoutHeight),
             typeof(int),
             typeof(CSOPartFlyout),
@@ -156,7 +154,7 @@ namespace CSOLauncher
             )
         );
 
-        public static readonly DependencyProperty FlyoutColorProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty FlyoutColorProperty = DependencyProperty.Register(
             nameof(CurrentColor),
             typeof(CSOFlyoutBase.Color),
             typeof(CSOPartFlyout),
@@ -173,28 +171,28 @@ namespace CSOLauncher
             )
         );
 
-        public static readonly DependencyProperty CurrentBackgroundProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty CurrentBackgroundProperty = DependencyProperty.Register(
             nameof(CurrentBackground),
             typeof(WriteableBitmap),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null)
         );
 
-        public static readonly DependencyProperty PartNameProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty PartNameProperty = DependencyProperty.Register(
             nameof(PartName),
             typeof(string),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null)
         );
 
-        public static readonly DependencyProperty PartDescProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty PartDescProperty = DependencyProperty.Register(
             nameof(PartDesc),
             typeof(string),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null)
         );
 
-        public static readonly DependencyProperty PartItemProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty PartItemProperty = DependencyProperty.Register(
             nameof(PartItem),
             typeof(Item),
             typeof(CSOPartFlyout),
@@ -247,7 +245,7 @@ namespace CSOLauncher
             )
         );
 
-        public static readonly DependencyProperty IsEmptyProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty IsEmptyProperty = DependencyProperty.Register(
             nameof(IsEmpty),
             typeof(Visibility),
             typeof(CSOPartFlyout),

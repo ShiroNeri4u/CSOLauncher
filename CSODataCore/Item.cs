@@ -3,6 +3,7 @@ using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -840,20 +841,18 @@ namespace CSODataCore
                         }
                     }
                 }
-
                 foreach (string line in Lines)
                 {
                     var text = line.Trim();
-                    if (string.IsNullOrEmpty(text) || line.StartsWith("//"))
+                    if (string.IsNullOrEmpty(text) || text.StartsWith("//"))
                         continue;
                     Regex regex = Filter();
 
-                    Match match = regex.Match(line);
+                    Match match = regex.Match(text);
                     if (match.Success)
                     {
                         string key = match.Groups["key"].Value;
                         string value = match.Groups["value"].Value;
-
                         LanguageDictionary[key] = value;
                     }
                 }

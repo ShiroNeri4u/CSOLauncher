@@ -13,7 +13,7 @@ namespace CSOLauncher
         {
             this.InitializeComponent();
             Border.Source = Launcher.Assets["itembox_gold"];
-            Weapon.Source = Launcher.Assets["ak47"];
+            Weapon.Source = Launcher.Assets["unknown_item"];
             Team.Source = Launcher.Assets["teamtype0"];
             Part.Source = Launcher.Assets["partsweapon_icon"];
             Enchant.Source = Launcher.Assets["enchant"];

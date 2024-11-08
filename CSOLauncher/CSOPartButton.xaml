@@ -21,7 +21,7 @@
         <Grid.Background>
             <ImageBrush Stretch="None" ImageSource="{x:Bind CurrentBackground, Mode=OneWay}"></ImageBrush>
         </Grid.Background>
-        <local:CSOPartFlyout x:Name="CSOFlyout" FlyoutWidth="245" CurrentColor="Grey"></local:CSOPartFlyout>
+        <local:CSOPartFlyout IsOpen="{x:Bind FlyoutIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind HorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind VerticalOffset, Mode=OneWay}" PartItem="{x:Bind PartItem, Mode=OneWay}" FlyoutWidth="245" CurrentColor="Grey"></local:CSOPartFlyout>
     </Grid>
 
 </UserControl>

@@ -3,6 +3,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System;
+using System.Diagnostics;
 using Windows.Foundation;
 
 namespace CSOLauncher
@@ -21,58 +23,106 @@ namespace CSOLauncher
             set => SetValue(CSOItemProperty, value);
         }
 
+        private bool FlyoutIsOpen
+        {
+            get => (bool)GetValue(FlyoutIsOpenProperty);
+            set => SetValue(FlyoutIsOpenProperty, value);
+        }
+        private double HorizontalOffset
+        {
+            get => (double)GetValue(HorizontalOffsetProperty);
+            set => SetValue(HorizontalOffsetProperty, value);
+        }
+
+        private double VerticalOffset
+        {
+            get => (double)GetValue(VerticalOffsetProperty);
+            set => SetValue(VerticalOffsetProperty, value);
+        }
+
         public CSOPartButton()
         {
             this.InitializeComponent();
-            CurrentBackground = Launcher.Assets["empty_slot"];
-        }
-
-        public void LoadFlyout()
-        {
-        }
-
-        private static void CalaHeight()
-        {
-
+            PartItem = ItemManager.Search(4005)[0];
         }
 
         public static readonly DependencyProperty CurrentBackgroundProperty = DependencyProperty.Register(
             nameof(CurrentBackground),
             typeof(WriteableBitmap),
-            typeof(CSOFlyoutBase),
+            typeof(CSOPartButton),
             new PropertyMetadata(null)
         );
 
         public static readonly DependencyProperty CSOItemProperty = DependencyProperty.Register(
             nameof(PartItem),
             typeof(Item),
-            typeof(CSOFlyoutBase),
+            typeof(CSOPartButton),
             new PropertyMetadata(null,
                 static (DependencyObject obj, DependencyPropertyChangedEventArgs e) =>
                 {
-                    
+                    var self = obj as CSOPartButton;
+                    if (self.PartItem.Name != null)
+                    {
+                        if(Launcher.Assets.TryGetValue(self.PartItem.ResourceName.ToLower() + "_s", out WriteableBitmap bitmap))
+                        {
+                            self.CurrentBackground = bitmap;
+                        }
+                        else
+                        {
+                            self.CurrentBackground = Launcher.Assets["empty_slot"];
+                        }
+                    }
+                    else
+                    {
+                        self.CurrentBackground = Launcher.Assets["empty_slot"];
+                    }
                 }
             )
         );
 
+        public static readonly DependencyProperty FlyoutIsOpenProperty = DependencyProperty.Register(
+            nameof(FlyoutIsOpen),
+            typeof(bool),
+            typeof(CSOPartButton),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty HorizontalOffsetProperty = DependencyProperty.Register(
+            nameof(HorizontalOffset),
+            typeof(double),
+            typeof(CSOPartButton),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty VerticalOffsetProperty = DependencyProperty.Register(
+            nameof(VerticalOffset),
+            typeof(double),
+            typeof(CSOPartButton),
+            new PropertyMetadata(null)
+        );
+
         private void OnPointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            CSOFlyout.IsOpen = true;
+            FlyoutIsOpen = true;
         }
 
         private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            CSOFlyout.IsOpen = false;
+            var currentPoint = e.GetCurrentPoint((UIElement)sender);
+            if (currentPoint.Properties.IsLeftButtonPressed)
+            {
+                FlyoutIsOpen = false;
+            }
         }
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            CSOFlyout.IsOpen = true;
+            FlyoutIsOpen = true;
         }
 
         private void OnPointerExited(object sender, PointerRoutedEventArgs e)
         {
-            CSOFlyout.IsOpen = false;
+            FlyoutIsOpen = false;
         }
 
         private void OnPointerCanceled(object sender, PointerRoutedEventArgs e)
@@ -87,7 +137,7 @@ namespace CSOLauncher
 
         private void OnPointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (CSOFlyout.IsOpen)
+            if (FlyoutIsOpen)
             {
                 var pointerPoint = e.GetCurrentPoint(this);
                 Point position = pointerPoint.Position;
@@ -95,8 +145,8 @@ namespace CSOLauncher
                 //在右侧有足够的空间
                 //if( rect.Width - position.X + rect.X > FlyoutWidth)
                 //{
-                    CSOFlyout.HorizontalOffset = position.X;
-                    CSOFlyout.VerticalOffset = position.Y + 1;
+                    HorizontalOffset = position.X;
+                    VerticalOffset = position.Y + 1;
                 //}
                 //else
                 //{
