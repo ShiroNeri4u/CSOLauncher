@@ -27,6 +27,7 @@ namespace CSOLauncher
         };
 
         public static readonly Dictionary<string, WriteableBitmap> Assets = [];
+        public static readonly Dictionary<string, BitmapImage> ImageResources = [];
 
         private static readonly List<Task> LoadAssetsTask = [];
 

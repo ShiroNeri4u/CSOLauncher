@@ -361,6 +361,7 @@ namespace CSODataCore
             Map(m => m.Id).Index(0);
             Map(m => m.Name).Index(1);
             Map(m => m.ResourceName).Index(2);
+            Map(m => m.Category).Index(4);
             Map(m => m.Team).Index(7);
             Map(m => m.Period).Index(27);
             Map(m => m.InGameItem).Index(35);
@@ -388,6 +389,10 @@ namespace CSODataCore
         /// </summary>
         public string? ResourceName { get; set; }
         /// <summary>
+        /// 分类(验证一些物品用)
+        /// </summary>
+        public byte Category { get; set; }
+        /// <summary>
         /// 使用阵营
         /// </summary>
         public ItemTeam Team { get; set; }
@@ -411,6 +416,10 @@ namespace CSODataCore
         /// 物品评级
         /// </summary>
         public ItemGrade? ItemGrade { get; set; }
+        /// <summary>
+        /// 空物品
+        /// </summary>
+        public bool IsEmpty = false;
     }
 
     public sealed class WeaponInfomationMap : ClassMap<WeaponInfomation>
@@ -591,7 +600,11 @@ namespace CSODataCore
 
     public static partial class ItemManager
     {
-        public static readonly Item NullItem = new();
+        public static readonly Item EmptyItem = new()
+        {
+            IsEmpty = true,
+            ItemGrade = ItemGrade.None,
+        };
         private const string PreName = "CSO_Item_Name_";
         private static readonly Dictionary<int, Item> ItemDictionary = [];
         private static readonly Dictionary<string, List<int>> StringToId = [];
@@ -669,9 +682,9 @@ namespace CSODataCore
             { ItemSortingIndex.CreatorItem, new List<Item>() },
         };
         public static readonly Dictionary<string, string> LanguageDictionary = new(StringComparer.OrdinalIgnoreCase);
-        private static int[] WeaponTypeFilter = [4001, 4002, 4003, 4004, 4005, 4601];
-        private static int[] KnifeTypeFilter = [4081, 4082, 4083, 4084, 4085, 4616];
-        private static int[] SpecialTypeFilter = [4086, 4087, 4088, 4089, 4090, 4617, 4091, 4092, 4093, 4094, 4095, 4618];
+        private static readonly int[] WeaponTypeFilter = [4001, 4002, 4003, 4004, 4005, 4601];
+        private static readonly int[] KnifeTypeFilter = [4081, 4082, 4083, 4084, 4085, 4616];
+        private static readonly int[] SpecialTypeFilter = [4086, 4087, 4088, 4089, 4090, 4617, 4091, 4092, 4093, 4094, 4095, 4618];
         /// <summary>
         /// 导入item.csv路径 <see cref="string"/> 的值
         /// </summary>
@@ -705,7 +718,7 @@ namespace CSODataCore
                     if (item.Name != null)
                     {
                         List<int> indexList = [item.Id];
-                        if(!StringToId.TryAdd(item.Name, indexList))
+                        if (!StringToId.TryAdd(item.Name, indexList))
                         {
                             if (!StringToId[item.Name].Contains(item.Id))
                             {
@@ -720,19 +733,19 @@ namespace CSODataCore
                     }
                     if (item.SortingIndex == ItemSortingIndex.WeaponPart)
                     {
-                        if (Array.IndexOf(WeaponTypeFilter, item.Id) > 0)
+                        if (Array.IndexOf(WeaponTypeFilter, item.Id) > -1)
                         {
                             PartDictionary[ItemPart.WeaponType].Add(item);
                         }
-                        else if (Array.IndexOf(KnifeTypeFilter, item.Id) > 0)
+                        else if (Array.IndexOf(KnifeTypeFilter, item.Id) > -1)
                         {
                             PartDictionary[ItemPart.KnifeType].Add(item);
                         }
-                        else if (Array.IndexOf(SpecialTypeFilter, item.Id) > 0)
+                        else if (Array.IndexOf(SpecialTypeFilter, item.Id) > -1)
                         {
                             PartDictionary[ItemPart.SpecialType].Add(item);
                         }
-                        else
+                        else if (item.Category == 13)
                         {
                             PartDictionary[ItemPart.WeaponType].Add(item);
                             PartDictionary[ItemPart.KnifeType].Add(item);
@@ -878,7 +891,12 @@ namespace CSODataCore
                         }
                     }
                 }
+                if (item.TransName == null)
+                {
+                    item.IsEmpty = true;
+                }
             }
+            EmptyItem.TransName = LanguageDictionary["CSO_NONE"];
         }
 
         public static Item[] Search(string context)
@@ -906,6 +924,17 @@ namespace CSODataCore
         public static Item[] Search(ItemSortingIndex index)
         {
             return [.. SortIndexDictionary[index]];
+        }
+
+        public static Item[] Search(ItemPart part)
+        {
+            return part switch
+            {
+                ItemPart.WeaponType => [.. PartDictionary[ItemPart.WeaponType]],
+                ItemPart.KnifeType => [.. PartDictionary[ItemPart.KnifeType]],
+                ItemPart.SpecialType => [.. PartDictionary[ItemPart.SpecialType]],
+                _ => [],
+            };
         }
 
         public static Item[] Search(int id)

@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace CSOLauncher
 {
-    public class CSOFlyoutBase
+    public class CSOItemBackgroundBase
     {
-        private const string PreName = "pulldown";
+        private const string PreName = "button_list";
         private const string PostName = "@n";
         private const char Underline = '_';
         private const char At = '@';
         private static readonly string[] Position = ["top_left", "top_center", "top_right", "center_left", "center_center", "center_right", "bottom_left", "bottom_center", "bottom_right"];
-        private static readonly string[] ColorString = ["grey", "green", "blue", "red", "gold", "purple", "redbrown"];
+        private static readonly string[] ColorString = ["c", "b", "a", "s", "ss", "sss", "rb"];
         private static readonly Dictionary<string, Task> ConverntTask = [];
-        private const int SingleLine = 19;
+        private const int SingleLine = 5;
         private const int Pixelbyte = 4;
-        private const int MinFlyoutSize = 38;
+        private const int MinBackgroundSize = 10;
         public enum Color : byte
         {
             Grey = 0,
@@ -34,8 +34,8 @@ namespace CSOLauncher
 
         public static string GetAssets(int FlyoutWidth, int FlyoutHeight, Color CurrentColor)
         {
-            int width = FlyoutWidth >= MinFlyoutSize ? FlyoutWidth : MinFlyoutSize;
-            int height = FlyoutHeight >= MinFlyoutSize ? FlyoutHeight : MinFlyoutSize;
+            int width = FlyoutWidth >= MinBackgroundSize ? FlyoutWidth : MinBackgroundSize;
+            int height = FlyoutHeight >= MinBackgroundSize ? FlyoutHeight : MinBackgroundSize;
             string color = ColorString[(int)CurrentColor];
             StringBuilder tasknamebuilder = new();
             tasknamebuilder.Append(PreName).Append(Underline).Append(color).Append(At).Append(width).Append(Underline).Append(height);

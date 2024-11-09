@@ -21,8 +21,6 @@ namespace CSOLauncher
             Name.Text = items[0].TransName;
         }
 
-       
-
         private async void SelectFileButton_Click(object sender, RoutedEventArgs e)
         {
             nint hwnd = WinRT.Interop.WindowNative.GetWindowHandle(Launcher.FileView);

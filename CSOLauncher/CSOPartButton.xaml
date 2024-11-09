@@ -21,7 +21,8 @@
         <Grid.Background>
             <ImageBrush Stretch="None" ImageSource="{x:Bind CurrentBackground, Mode=OneWay}"></ImageBrush>
         </Grid.Background>
-        <local:CSOPartFlyout IsOpen="{x:Bind FlyoutIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind HorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind VerticalOffset, Mode=OneWay}" PartItem="{x:Bind PartItem, Mode=OneWay}" FlyoutWidth="245" CurrentColor="Grey"></local:CSOPartFlyout>
+        <local:CSOPartFlyout IsOpen="{x:Bind FlyoutIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind HorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind VerticalOffset, Mode=OneWay}" CurrentPart="{x:Bind PartItem, Mode=OneWay}" FlyoutWidth="245" CurrentColor="Grey" />
+        <local:CSOPartEditor IsOpen="{x:Bind EditorIsOpen, Mode=TwoWay}" HorizontalOffset="{x:Bind HorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind VerticalOffset, Mode=OneWay}" CurrentPart="{x:Bind PartItem, Mode=TwoWay}" PartItems="{x:Bind PartItems, Mode=OneWay}" FlyoutWidth="164" FlyoutHeight="300" CurrentColor="Grey" />
     </Grid>
 
 </UserControl>
