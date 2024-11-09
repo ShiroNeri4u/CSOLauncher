@@ -8,23 +8,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <local:PartImageConverter x:Key="PartImageConverter"></local:PartImageConverter>
+        <local:ImageSourceConverter x:Key="ImageSourceConverter"></local:ImageSourceConverter>
     </UserControl.Resources>
 
     <Grid PointerPressed="OnPointerPressed" Width="140" Height="89.6">
         <Grid.RenderTransform>
-            <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
+            <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
         </Grid.RenderTransform>
 
-        <Canvas Width="200" Height="128" >
+        <Canvas Width="200" Height="128">
             <!--底层-->
-            <Image Width="200" Height="128" Source="{x:Bind ItemBackground, Mode=OneWay}" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="0" />
+            <Image Width="200" Height="128" Source="{x:Bind CSOItemBoxBottom, Mode=OneWay}" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="0"/>
             <!--图标-->
-            <Image Width="135" Height="81" Source="{x:Bind PartUri, Converter={StaticResource PartImageConverter} , Mode=OneWay}" Stretch="Fill" Canvas.Left="32.5" Canvas.Top="13" Canvas.ZIndex="1"/>
+            <Image Width="135" Height="81" Source="{x:Bind CSOPartUri, Converter={StaticResource ImageSourceConverter} , Mode=OneWay}" Stretch="Fill" Canvas.Left="32.5" Canvas.Top="13" Canvas.ZIndex="1"/>
             <!--配件名字-->
-            <TextBlock Text="{x:Bind PartName, Mode=OneWay}" Canvas.Left="20" Canvas.Top="90" Canvas.ZIndex="1" FontFamily="{StaticResource CSOFont}" FontSize="13" Foreground="White" CharacterSpacing="50" TextDecorations="Underline" />
+            <TextBlock Text="{x:Bind CSOCSOPartName, Mode=OneWay}" Canvas.Left="20" Canvas.Top="90" Canvas.ZIndex="1" FontFamily="{StaticResource CSOFont}" FontSize="13" Foreground="White" CharacterSpacing="50" TextDecorations="Underline"/>
             <!--边框-->
-            <Image Width="200" Height="128" Source="{x:Bind ItemBorder, Mode=OneWay}" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="2" />
+            <Image Width="200" Height="128" Source="{x:Bind CSOItemBoxBorder, Mode=OneWay}" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="2"/>
         </Canvas>
 
     </Grid>

@@ -32,11 +32,11 @@ namespace CSOLauncher
             RedBrown = 6,
         }
 
-        public static string GetAssets(int FlyoutWidth, int FlyoutHeight, Color CurrentColor)
+        public static string GetAssets(int CSOPartFlyoutWidth, int CSOPartFlyoutHeight, Color CSOPartFlyoutBorderColor)
         {
-            int width = FlyoutWidth >= MinFlyoutSize ? FlyoutWidth : MinFlyoutSize;
-            int height = FlyoutHeight >= MinFlyoutSize ? FlyoutHeight : MinFlyoutSize;
-            string color = ColorString[(int)CurrentColor];
+            int width = CSOPartFlyoutWidth >= MinFlyoutSize ? CSOPartFlyoutWidth : MinFlyoutSize;
+            int height = CSOPartFlyoutHeight >= MinFlyoutSize ? CSOPartFlyoutHeight : MinFlyoutSize;
+            string color = ColorString[(int)CSOPartFlyoutBorderColor];
             StringBuilder tasknamebuilder = new();
             tasknamebuilder.Append(PreName).Append(Underline).Append(color).Append(At).Append(width).Append(Underline).Append(height);
             string taskname = tasknamebuilder.ToString();

@@ -15,68 +15,70 @@ namespace CSOLauncher
         private bool LoadWidth = false;
         private bool LoadHeight = false;
         private bool LoadItem = false;
-        public Item CurrentPart
+        private WriteableBitmap CSOPartEditorBackground
         {
-            get => (Item)GetValue(CurrentPartProperty);
-            set => SetValue(CurrentPartProperty, value);
+            get => (WriteableBitmap)GetValue(CSOPartEditorBackgroundProperty);
+            set => SetValue(CSOPartEditorBackgroundProperty, value);
         }
 
-        public bool IsOpen
+        private int CSOPartEditorScrollViewerWidth
         {
-            get => (bool)GetValue(IsOpenProperty);
-            set => SetValue(IsOpenProperty, value);
+            get => (int)GetValue(CSOPartEditorScrollViewerWidthProperty);
+            set => SetValue(CSOPartEditorScrollViewerWidthProperty, value);
         }
 
-        public double HorizontalOffset
+        private int CSOPartEditorScrollViewerHeight
         {
-            get => (double)GetValue(HorizontalOffsetProperty);
-            set => SetValue(HorizontalOffsetProperty, value);
+            get => (int)GetValue(CSOPartEditorScrollViewerHeightProperty);
+            set => SetValue(CSOPartEditorScrollViewerHeightProperty, value);
         }
 
-        public double VerticalOffset
+        public double CSOPartEditorHorizontalOffset
         {
-            get => (double)GetValue(VerticalOffsetProperty);
-            set => SetValue(VerticalOffsetProperty, value);
+            get => (double)GetValue(CSOPartEditorHorizontalOffsetProperty);
+            set => SetValue(CSOPartEditorHorizontalOffsetProperty, value);
         }
 
-        public int FlyoutWidth
+        public double CSOPartEditorVerticalOffset
         {
-            get => (int)GetValue(FlyoutWidthProperty);
-            set => SetValue(FlyoutWidthProperty, value);
+            get => (double)GetValue(CSOPartEditorVerticalOffsetProperty);
+            set => SetValue(CSOPartEditorVerticalOffsetProperty, value);
         }
 
-        public int FlyoutHeight
+        public int CSOPartEditorWidth
         {
-            get => (int)GetValue(FlyoutHeightProperty);
-            set => SetValue(FlyoutHeightProperty, value);
+            get => (int)GetValue(CSOPartEditorWidthProperty);
+            set => SetValue(CSOPartEditorWidthProperty, value);
         }
 
-        public CSOFlyoutBase.Color CurrentColor
+        public int CSOPartEditorHeight
         {
-            get => (CSOFlyoutBase.Color)GetValue(FlyoutColorProperty);
-            set => SetValue(FlyoutColorProperty, value);
+            get => (int)GetValue(CSOPartEditorHeightProperty);
+            set => SetValue(CSOPartEditorHeightProperty, value);
+        }
+        
+        public bool CSOPartEditorIsOpen
+        {
+            get => (bool)GetValue(CSOPartEditorIsOpenProperty);
+            set => SetValue(CSOPartEditorIsOpenProperty, value);
         }
 
-        private double ScrollViewerWidth
+        public CSOFlyoutBase.Color CSOPartEditorBorderColor
         {
-            get => (double)GetValue(ScrollViewerWidthProperty);
-            set => SetValue(ScrollViewerWidthProperty, value);
+            get => (CSOFlyoutBase.Color)GetValue(CSOPartEditorBorderColorProperty);
+            set => SetValue(CSOPartEditorBorderColorProperty, value);
         }
 
-        private double ScrollViewerHeight
+        public Item CSOPartItem
         {
-            get => (double)GetValue(ScrollViewerHeightProperty);
-            set => SetValue(ScrollViewerHeightProperty, value);
+            get => (Item)GetValue(CSOPartItemProperty);
+            set => SetValue(CSOPartItemProperty, value);
         }
-        private WriteableBitmap CurrentBackground
+
+        public List<Item> CSOPartItems
         {
-            get => (WriteableBitmap)GetValue(CurrentBackgroundProperty);
-            set => SetValue(CurrentBackgroundProperty, value);
-        }
-        public ObservableCollection<Item> PartItems
-        {
-            get => (ObservableCollection<Item>)GetValue(PartItemsProperty);
-            set => SetValue(PartItemsProperty, value);
+            get => (List<Item>)GetValue(CSOPartItemsProperty);
+            set => SetValue(CSOPartItemsProperty, value);
         }
 
         public CSOPartEditor()
@@ -86,52 +88,59 @@ namespace CSOLauncher
 
         private void OnLoad()
         {
-            Set(CSOFlyoutBase.GetAssets(FlyoutWidth, FlyoutHeight, CurrentColor));
+            Set(CSOFlyoutBase.GetAssets(CSOPartEditorWidth, CSOPartEditorHeight, CSOPartEditorBorderColor));
         }
 
         private void Set(string taskname)
         {
-            CurrentBackground = Launcher.Assets[taskname];
+            CSOPartEditorBackground = Launcher.Assets[taskname];
         }
 
-        public static readonly DependencyProperty CurrentPartProperty = DependencyProperty.Register(
-            nameof(CurrentPart),
-            typeof(Item),
+        private static readonly DependencyProperty CSOPartEditorBackgroundProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorBackground),
+            typeof(WriteableBitmap),
             typeof(CSOPartEditor),
             new PropertyMetadata(null)
         );
 
-        public static readonly DependencyProperty IsOpenProperty = DependencyProperty.Register(
-            nameof(IsOpen),
-            typeof(bool),
-            typeof(CSOPartEditor),
-            new PropertyMetadata(false)
-        );
-
-        private static readonly DependencyProperty HorizontalOffsetProperty = DependencyProperty.Register(
-            nameof(HorizontalOffset),
-            typeof(double),
-            typeof(CSOPartEditor),
-            new PropertyMetadata(null)
-        );
-
-        private static readonly DependencyProperty VerticalOffsetProperty = DependencyProperty.Register(
-            nameof(VerticalOffset),
-            typeof(double),
-            typeof(CSOPartEditor),
-            new PropertyMetadata(null)
-        );
-
-        private static readonly DependencyProperty FlyoutWidthProperty = DependencyProperty.Register(
-            nameof(FlyoutWidth),
+        private static readonly DependencyProperty CSOPartEditorScrollViewerWidthProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorScrollViewerWidth),
             typeof(int),
+            typeof(CSOPartEditor),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty CSOPartEditorScrollViewerHeightProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorScrollViewerHeight),
+            typeof(int),
+            typeof(CSOPartEditor),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty CSOPartEditorHorizontalOffsetProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorHorizontalOffset),
+            typeof(double),
+            typeof(CSOPartEditor),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty CSOPartEditorVerticalOffsetProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorVerticalOffset),
+            typeof(double),
+            typeof(CSOPartEditor),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty CSOPartEditorWidthProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorWidth),
+            typeof(double),
             typeof(CSOPartEditor),
             new PropertyMetadata(null,
                 static (DependencyObject obj, DependencyPropertyChangedEventArgs e) =>
                 {
                     var self = obj as CSOPartEditor;
                     self.LoadWidth = true;
-                    self.ScrollViewerWidth = self.FlyoutWidth;
+                    self.CSOPartEditorScrollViewerWidth = self.CSOPartEditorWidth;
                     if (self.LoadWidth && self.LoadHeight && self.LoadColor && self.LoadItem)
                     {
                         self.OnLoad();
@@ -140,16 +149,16 @@ namespace CSOLauncher
             )
         );
 
-        private static readonly DependencyProperty FlyoutHeightProperty = DependencyProperty.Register(
-            nameof(FlyoutHeight),
-            typeof(int),
+        private static readonly DependencyProperty CSOPartEditorHeightProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorHeight),
+            typeof(double),
             typeof(CSOPartEditor),
             new PropertyMetadata(null,
                 static (DependencyObject obj, DependencyPropertyChangedEventArgs e) =>
                 {
                     var self = obj as CSOPartEditor;
                     self.LoadHeight = true;
-                    self.ScrollViewerHeight = self.FlyoutHeight - 10;
+                    self.CSOPartEditorScrollViewerHeight = self.CSOPartEditorHeight - 10;
                     if (self.LoadWidth && self.LoadHeight && self.LoadColor && self.LoadItem)
                     {
                         self.OnLoad();
@@ -158,8 +167,15 @@ namespace CSOLauncher
             )
         );
 
-        private static readonly DependencyProperty FlyoutColorProperty = DependencyProperty.Register(
-            nameof(CurrentColor),
+        public static readonly DependencyProperty CSOPartEditorIsOpenProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorIsOpen),
+            typeof(bool),
+            typeof(CSOPartEditor),
+            new PropertyMetadata(false)
+        );
+
+        private static readonly DependencyProperty CSOPartEditorBorderColorProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorBorderColor),
             typeof(CSOFlyoutBase.Color),
             typeof(CSOPartEditor),
             new PropertyMetadata(null,
@@ -175,16 +191,16 @@ namespace CSOLauncher
             )
         );
 
-        private static readonly DependencyProperty CurrentBackgroundProperty = DependencyProperty.Register(
-            nameof(CurrentBackground),
-            typeof(WriteableBitmap),
+        public static readonly DependencyProperty CSOPartItemProperty = DependencyProperty.Register(
+            nameof(CSOPartItem),
+            typeof(Item),
             typeof(CSOPartEditor),
             new PropertyMetadata(null)
         );
 
-        private static readonly DependencyProperty PartItemsProperty = DependencyProperty.Register(
-            nameof(PartItems),
-            typeof(ObservableCollection<Item>),
+        private static readonly DependencyProperty CSOPartItemsProperty = DependencyProperty.Register(
+            nameof(CSOPartItems),
+            typeof(List<Item>),
             typeof(CSOPartEditor),
             new PropertyMetadata(null,
                 static (DependencyObject obj, DependencyPropertyChangedEventArgs e) =>
@@ -199,27 +215,13 @@ namespace CSOLauncher
             )
         );
 
-        private static readonly DependencyProperty ScrollViewerWidthProperty = DependencyProperty.Register(
-            nameof(ScrollViewerWidth),
-            typeof(double),
-            typeof(CSOPartEditor),
-            new PropertyMetadata(null)
-        );
-
-        private static readonly DependencyProperty ScrollViewerHeightProperty = DependencyProperty.Register(
-            nameof(ScrollViewerHeightProperty),
-            typeof(double),
-            typeof(CSOPartEditor),
-            new PropertyMetadata(null)
-        );
-
         private void OnPartSelectionChanged(object sender, RoutedEventArgs e)
         {
             var view = sender as CSOPartView;
             if (view != null)
             {
-                CurrentPart = view.PartItem;
-                IsOpen = false;
+                CSOPartItem = view.CSOPartItem;
+                CSOPartEditorIsOpen = false;
             }
         }
     }

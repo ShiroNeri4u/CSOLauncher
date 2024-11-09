@@ -18,7 +18,7 @@
         PointerCaptureLost="OnPointerCaptureLost">
         
         <Grid.Background>
-            <ImageBrush Stretch="None" ImageSource="{x:Bind CurrentBackground, Mode=OneWay}" />
+            <ImageBrush Stretch="None" ImageSource="{x:Bind CSOPartFlyoutBorderBackground, Mode=OneWay}" />
         </Grid.Background>
         <Grid.RenderTransform>
             <ScaleTransform ScaleX="{x:Bind ButtonScale, Mode=OneWay}" ScaleY="{x:Bind ButtonScale, Mode=OneWay}" />

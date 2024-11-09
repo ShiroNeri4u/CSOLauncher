@@ -8,23 +8,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Popup IsOpen="{x:Bind IsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind HorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind VerticalOffset, Mode=OneWay}" AllowFocusOnInteraction="False" AllowFocusWhenDisabled="False">
-        <Grid Width="{x:Bind FlyoutWidth, Mode=OneWay}" Height="{x:Bind FlyoutHeight, Mode=OneWay}">
+    <Popup IsOpen="{x:Bind CSOPartFlyoutIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind CSOPartFlyoutHorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind CSOPartFlyoutVerticalOffset, Mode=OneWay}" AllowFocusOnInteraction="False" AllowFocusWhenDisabled="False">
+        <Grid Width="{x:Bind CSOPartFlyoutWidth, Mode=OneWay}" Height="{x:Bind CSOPartFlyoutHeight, Mode=OneWay}">
             <Grid.Background>
-                <ImageBrush Stretch="None" ImageSource="{x:Bind CurrentBackground, Mode=OneWay}"></ImageBrush>
+                <ImageBrush Stretch="None" ImageSource="{x:Bind CSOPartFlyoutBorderBackground, Mode=OneWay}"></ImageBrush>
             </Grid.Background>
             <StackPanel Orientation="Vertical" Margin="12,12,12,17">
                 <TextBlock
-                        Text="{x:Bind PartName, Mode=OneWay}" 
+                        Text="{x:Bind CSOPartName, Mode=OneWay}" 
                         Foreground="White" 
                         FontFamily="{StaticResource CSOFont}" 
                         CharacterSpacing="50" 
                         TextDecorations="Underline" 
                         FontSize="13.0"
-                        Visibility="{x:Bind IsEmpty}"
+                        Visibility="{x:Bind CSOPartFlyoutIsEmpty, Mode=OneWay}"
                         Margin="0,0,0,12"/>
                 <TextBlock
-                        Text="{x:Bind PartDesc, Mode=OneWay}" 
+                        Text="{x:Bind CSOPartDesc, Mode=OneWay}" 
                         Foreground="#a8a8a8" 
                         FontFamily="{StaticResource CSOFont}" 
                         CharacterSpacing="50" 

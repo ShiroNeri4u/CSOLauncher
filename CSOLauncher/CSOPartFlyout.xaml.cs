@@ -19,70 +19,69 @@ namespace CSOLauncher
         private bool LoadWidth = false;
         private bool LoadHeight = false;
         private bool LoadItem = false;
-        public bool IsOpen
+        private WriteableBitmap CSOPartFlyoutBorderBackground
         {
-            get => (bool)GetValue(IsOpenProperty);
-            set => SetValue(IsOpenProperty, value);
+            get => (WriteableBitmap)GetValue(CSOPartFlyoutBorderBackgroundProperty);
+            set => SetValue(CSOPartFlyoutBorderBackgroundProperty, value);
+        }
+        private string CSOPartName
+        {
+            get => (string)GetValue(CSOPartNameProperty);
+            set => SetValue(CSOPartNameProperty, value);
         }
 
-        public double HorizontalOffset
+        private string CSOPartDesc
         {
-            get => (double)GetValue(HorizontalOffsetProperty);
-            set => SetValue(HorizontalOffsetProperty, value);
+            get => (string)GetValue(CSOPartDescProperty);
+            set => SetValue(CSOPartDescProperty, value);
         }
 
-        public double VerticalOffset
+        private Visibility CSOPartFlyoutIsEmpty
         {
-            get => (double)GetValue(VerticalOffsetProperty);
-            set => SetValue(VerticalOffsetProperty, value);
+            get => (Visibility)GetValue(CSOPartFlyoutIsEmptyProperty);
+            set => SetValue(CSOPartFlyoutIsEmptyProperty, value);
         }
 
-        public int FlyoutWidth
+        public bool CSOPartFlyoutIsOpen
         {
-            get => (int)GetValue(FlyoutWidthProperty);
-            set => SetValue(FlyoutWidthProperty, value);
+            get => (bool)GetValue(CSOPartFlyoutIsOpenProperty);
+            set => SetValue(CSOPartFlyoutIsOpenProperty, value);
         }
 
-        private int FlyoutHeight
+        public double CSOPartFlyoutHorizontalOffset
         {
-            get => (int)GetValue(FlyoutHeightProperty);
-            set => SetValue(FlyoutHeightProperty, value);
+            get => (double)GetValue(CSOPartFlyoutHorizontalOffsetProperty);
+            set => SetValue(CSOPartFlyoutHorizontalOffsetProperty, value);
         }
 
-        public CSOFlyoutBase.Color CurrentColor
+        public double CSOPartFlyoutVerticalOffset
         {
-            get => (CSOFlyoutBase.Color)GetValue(FlyoutColorProperty);
-            set => SetValue(FlyoutColorProperty, value);
+            get => (double)GetValue(CSOPartFlyoutVerticalOffsetProperty);
+            set => SetValue(CSOPartFlyoutVerticalOffsetProperty, value);
         }
 
-        private WriteableBitmap CurrentBackground
+        public int CSOPartFlyoutWidth
         {
-            get => (WriteableBitmap)GetValue(CurrentBackgroundProperty);
-            set => SetValue(CurrentBackgroundProperty, value);
+            get => (int)GetValue(CSOPartFlyoutWidthProperty);
+            set => SetValue(CSOPartFlyoutWidthProperty, value);
         }
 
-        private string PartName
+        private int CSOPartFlyoutHeight
         {
-            get => (string)GetValue(PartNameProperty);
-            set => SetValue(PartNameProperty, value);
+            get => (int)GetValue(CSOPartFlyoutHeightProperty);
+            set => SetValue(CSOPartFlyoutHeightProperty, value);
         }
 
-        private string PartDesc
+        public CSOFlyoutBase.Color CSOPartFlyoutBorderColor
         {
-            get => (string)GetValue(PartDescProperty);
-            set => SetValue(PartDescProperty, value);
+            get => (CSOFlyoutBase.Color)GetValue(CSOPartFlyoutBorderColorProperty);
+            set => SetValue(CSOPartFlyoutBorderColorProperty, value);
         }
 
-        public Item CurrentPart
+        public Item CSOPartItem
         {
-            get => (Item)GetValue(CurrentPartProperty);
-            set => SetValue(CurrentPartProperty, value);
-        }
-
-        private Visibility IsEmpty
-        {
-            get => (Visibility)GetValue(IsEmptyProperty);
-            set => SetValue(IsEmptyProperty, value);
+            get => (Item)GetValue(CSOPartItemProperty);
+            set => SetValue(CSOPartItemProperty, value);
         }
 
         public CSOPartFlyout()
@@ -92,37 +91,65 @@ namespace CSOLauncher
 
         private void OnLoad()
         {
-            Set(CSOFlyoutBase.GetAssets(FlyoutWidth,FlyoutHeight,CurrentColor));
+            Set(CSOFlyoutBase.GetAssets(CSOPartFlyoutWidth,CSOPartFlyoutHeight,CSOPartFlyoutBorderColor));
         }
 
         private void Set(string taskname)
         {
-            CurrentBackground = Launcher.Assets[taskname];
+            CSOPartFlyoutBorderBackground = Launcher.Assets[taskname];
         }
 
-        private static readonly DependencyProperty IsOpenProperty = DependencyProperty.Register(
-            nameof(IsOpen),
+        private static readonly DependencyProperty CSOPartFlyoutBorderBackgroundProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutBorderBackground),
+            typeof(WriteableBitmap),
+            typeof(CSOPartFlyout),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty CSOPartNameProperty = DependencyProperty.Register(
+            nameof(CSOPartName),
+            typeof(string),
+            typeof(CSOPartFlyout),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty CSOPartDescProperty = DependencyProperty.Register(
+            nameof(CSOPartDesc),
+            typeof(string),
+            typeof(CSOPartFlyout),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty CSOPartFlyoutIsEmptyProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutIsEmpty),
+            typeof(Visibility),
+            typeof(CSOPartFlyout),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty CSOPartFlyoutIsOpenProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutIsOpen),
             typeof(double),
             typeof(CSOPartFlyout),
             new PropertyMetadata(false)
         );
 
-        private static readonly DependencyProperty HorizontalOffsetProperty = DependencyProperty.Register(
-            nameof(HorizontalOffset),
+        private static readonly DependencyProperty CSOPartFlyoutHorizontalOffsetProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutHorizontalOffset),
             typeof(double),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null)
         );
 
-        private static readonly DependencyProperty VerticalOffsetProperty = DependencyProperty.Register(
-            nameof(VerticalOffset),
+        private static readonly DependencyProperty CSOPartFlyoutVerticalOffsetProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutVerticalOffset),
             typeof(double),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null)
         );
 
-        private static readonly DependencyProperty FlyoutWidthProperty = DependencyProperty.Register(
-            nameof(FlyoutWidth),
+        private static readonly DependencyProperty CSOPartFlyoutWidthProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutWidth),
             typeof(int),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null,
@@ -138,8 +165,8 @@ namespace CSOLauncher
             )
         );
 
-        private static readonly DependencyProperty FlyoutHeightProperty = DependencyProperty.Register(
-            nameof(FlyoutHeight),
+        private static readonly DependencyProperty CSOPartFlyoutHeightProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutHeight),
             typeof(int),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null,
@@ -155,8 +182,8 @@ namespace CSOLauncher
             )
         );
 
-        private static readonly DependencyProperty FlyoutColorProperty = DependencyProperty.Register(
-            nameof(CurrentColor),
+        private static readonly DependencyProperty CSOPartFlyoutBorderColorProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutBorderColor),
             typeof(CSOFlyoutBase.Color),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null,
@@ -172,50 +199,30 @@ namespace CSOLauncher
             )
         );
 
-        private static readonly DependencyProperty CurrentBackgroundProperty = DependencyProperty.Register(
-            nameof(CurrentBackground),
-            typeof(WriteableBitmap),
-            typeof(CSOPartFlyout),
-            new PropertyMetadata(null)
-        );
 
-        private static readonly DependencyProperty PartNameProperty = DependencyProperty.Register(
-            nameof(PartName),
-            typeof(string),
-            typeof(CSOPartFlyout),
-            new PropertyMetadata(null)
-        );
-
-        private static readonly DependencyProperty PartDescProperty = DependencyProperty.Register(
-            nameof(PartDesc),
-            typeof(string),
-            typeof(CSOPartFlyout),
-            new PropertyMetadata(null)
-        );
-
-        public static readonly DependencyProperty CurrentPartProperty = DependencyProperty.Register(
-            nameof(CurrentPart),
+        public static readonly DependencyProperty CSOPartItemProperty = DependencyProperty.Register(
+            nameof(CSOPartItem),
             typeof(Item),
             typeof(CSOPartFlyout),
             new PropertyMetadata(null,
                 static (DependencyObject obj, DependencyPropertyChangedEventArgs e) =>
                 {
                     var self = obj as CSOPartFlyout;
-                    Item item = self.CurrentPart;
+                    Item item = self.CSOPartItem;
                     string text;
                     if (!item.IsEmpty)
                     {
-                        self.PartName = item.TransName;
+                        self.CSOPartName = item.TransName;
                         StringBuilder desc = new();
                         desc.Append(ItemManager.LanguageDictionary["CSO_Item_Desc_" + item.ResourceName]);
                         desc.Replace(@"\n", NewLine);
                         text = desc.ToString();
-                        self.PartDesc = text;
+                        self.CSOPartDesc = text;
                     }
                     else
                     {
                         text = ItemManager.LanguageDictionary["CSO_WeaponParts_Tooltip_Empty"];
-                        self.PartDesc = text;
+                        self.CSOPartDesc = text;
                     }
                     TextBlock textBlock = new()
                     {
@@ -227,15 +234,15 @@ namespace CSOLauncher
                         FontFamily = (FontFamily)Microsoft.UI.Xaml.Application.Current.Resources["CSOFont"]
                     };
                     textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    if (item.Name != null)
+                    if (!item.IsEmpty)
                     {
-                        self.IsEmpty = Visibility.Visible;
-                        self.FlyoutHeight = (int)textBlock.DesiredSize.Height + 57;
+                        self.CSOPartFlyoutIsEmpty = Visibility.Visible;
+                        self.CSOPartFlyoutHeight = (int)textBlock.DesiredSize.Height + 57;
                     }
                     else
                     {
-                        self.IsEmpty = Visibility.Collapsed;
-                        self.FlyoutHeight = (int)textBlock.DesiredSize.Height + 27;
+                        self.CSOPartFlyoutIsEmpty = Visibility.Collapsed;
+                        self.CSOPartFlyoutHeight = (int)textBlock.DesiredSize.Height + 27;
                     }
                     self.LoadItem = true;
                     if (self.LoadWidth && self.LoadHeight && self.LoadColor && self.LoadItem)
@@ -246,11 +253,5 @@ namespace CSOLauncher
             )
         );
 
-        private static readonly DependencyProperty IsEmptyProperty = DependencyProperty.Register(
-            nameof(IsEmpty),
-            typeof(Visibility),
-            typeof(CSOPartFlyout),
-            new PropertyMetadata(null)
-        );
     }
 }

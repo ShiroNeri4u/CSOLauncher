@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -18,109 +19,126 @@ namespace CSOLauncher
     {
         private static readonly string[] ColorString = ["c", "b", "a", "s", "ss", "sss", "rb"];
         private const string PreName = "itembox_random";
+        private const string Extend = ".png";
+        private const string ItemDirectory = "Item";
+        private const string NonePart = "partsrandom";
+        private const char BackSlash = '\\';
         private const char UnderLine = '_';
-        private const string ItemBorderName = "line";
-        private const string ItemBackgroundName = "bg";
+        private const string CSOItemBoxBorderName = "line";
+        private const string CSOItemBoxBottomName = "bg";
         public event RoutedEventHandler Click;
 
-        private WriteableBitmap ItemBorder
+        private WriteableBitmap CSOItemBoxBorder
         {
-            get => (WriteableBitmap)GetValue(ItemBorderProperty);
-            set => SetValue(ItemBorderProperty, value);
+            get => (WriteableBitmap)GetValue(CSOItemBoxBorderProperty);
+            set => SetValue(CSOItemBoxBorderProperty, value);
         }
-        private WriteableBitmap ItemBackground
+
+        private WriteableBitmap CSOItemBoxBottom
         {
-            get => (WriteableBitmap)GetValue(ItemBackgroundProperty);
-            set => SetValue(ItemBackgroundProperty, value);
+            get => (WriteableBitmap)GetValue(CSOItemBoxBottomProperty);
+            set => SetValue(CSOItemBoxBottomProperty, value);
         }
-        private string PartName
+
+        private string CSOCSOPartName
         {
-            get => (string)GetValue(PartNameProperty);
-            set => SetValue(PartNameProperty, value);
+            get => (string)GetValue(CSOCSOPartNameProperty);
+            set => SetValue(CSOCSOPartNameProperty, value);
         }
-        private object PartUri
+
+        private object CSOPartUri
         {
-            get => (object)GetValue(PartUriProperty);
-            set => SetValue(PartUriProperty, value);
+            get => (object)GetValue(CSOPartUriProperty);
+            set => SetValue(CSOPartUriProperty, value);
         }
-        public Item PartItem
+
+        public Item CSOPartItem
         {
-            get => (Item)GetValue(PartItemProperty);
-            set => SetValue(PartItemProperty, value);
+            get => (Item)GetValue(CSOPartItemProperty);
+            set => SetValue(CSOPartItemProperty, value);
         }
+
         public CSOPartView()
         {
             this.InitializeComponent();
         }
 
-        public static readonly DependencyProperty ClickProperty = DependencyProperty.Register(
+        private static readonly DependencyProperty ClickProperty = DependencyProperty.Register(
             nameof(Click),
             typeof(RoutedEventHandler),
             typeof(CSOButtonBase),
             new PropertyMetadata(null)
         );
 
-        private static readonly DependencyProperty ItemBorderProperty = DependencyProperty.Register(
-            nameof(ItemBorder),
+        private static readonly DependencyProperty CSOItemBoxBorderProperty = DependencyProperty.Register(
+            nameof(CSOItemBoxBorder),
             typeof(WriteableBitmap),
             typeof(CSOPartView),
             new PropertyMetadata(null)
         );
 
-        private static readonly DependencyProperty ItemBackgroundProperty = DependencyProperty.Register(
-            nameof(ItemBackground),
+        private static readonly DependencyProperty CSOItemBoxBottomProperty = DependencyProperty.Register(
+            nameof(CSOItemBoxBottom),
             typeof(WriteableBitmap),
             typeof(CSOPartView),
             new PropertyMetadata(null)
         );
-        private static readonly DependencyProperty PartNameProperty = DependencyProperty.Register(
-            nameof(PartName),
+        private static readonly DependencyProperty CSOCSOPartNameProperty = DependencyProperty.Register(
+            nameof(CSOCSOPartName),
             typeof(string),
             typeof(CSOPartView),
             new PropertyMetadata(null)
         );
 
-        private static readonly DependencyProperty PartUriProperty = DependencyProperty.Register(
-            nameof(PartUri),
+        private static readonly DependencyProperty CSOPartUriProperty = DependencyProperty.Register(
+            nameof(CSOPartUri),
             typeof(object),
             typeof(CSOPartView),
             new PropertyMetadata(null)
         );
 
-        private static readonly DependencyProperty PartItemProperty = DependencyProperty.Register(
-            nameof(PartItem),
+        private static readonly DependencyProperty CSOPartItemProperty = DependencyProperty.Register(
+            nameof(CSOPartItem),
             typeof(Item),
             typeof(CSOPartView),
             new PropertyMetadata(null,
                 static (DependencyObject obj, DependencyPropertyChangedEventArgs e) =>
                 {
                     var self = obj as CSOPartView;
-                    self.PartName = self.PartItem.TransName;
+                    self.CSOCSOPartName = self.CSOPartItem.TransName;
                     StringBuilder sb = new();
                     sb.Append(PreName);
                     sb.Append(UnderLine);
-                    sb.Append(ColorString[(int)self.PartItem.ItemGrade]);
+                    sb.Append(ColorString[(int)self.CSOPartItem.ItemGrade]);
                     sb.Append(UnderLine);
-                    sb.Append(ItemBackgroundName);
-                    self.ItemBackground = Launcher.Assets[sb.ToString()];
-                    sb.Replace(ItemBackgroundName, ItemBorderName);
-                    self.ItemBorder = Launcher.Assets[sb.ToString()];
-                    if (!self.PartItem.IsEmpty)
+                    sb.Append(CSOItemBoxBorderName);
+                    self.CSOItemBoxBorder = Launcher.Assets[sb.ToString()];
+                    sb.Replace(CSOItemBoxBorderName, CSOItemBoxBottomName);
+                    self.CSOItemBoxBottom = Launcher.Assets[sb.ToString()];
+                    if (!self.CSOPartItem.IsEmpty)
                     {
-                        if(Launcher.ImageResources.TryGetValue(self.PartItem.ResourceName, out BitmapImage bitmapimage))
+                        if(Launcher.ImageResources.TryGetValue(self.CSOPartItem.ResourceName, out BitmapImage bitmap))
                         {
-                            self.PartUri = bitmapimage;
+                            self.CSOPartUri = bitmap;
                         }
                         else
                         {
-                            BitmapImage bitmap = new BitmapImage(new Uri(@"D:\CSNZ\Item\Item\" + self.PartItem.ResourceName.ToLower() + ".png"));
-                            Launcher.ImageResources.Add(self.PartItem.ResourceName, bitmap);
-                            self.PartUri = bitmap;
+                            sb.Clear();
+                            sb.Append(Launcher.ResourceDirectory);
+                            sb.Append(BackSlash);
+                            sb.Append(ItemDirectory);
+                            sb.Append(BackSlash);
+                            sb.Append(self.CSOPartItem.ResourceName.ToLower());
+                            sb.Append(Extend);
+                            Debug.WriteLine(sb.ToString());
+                            BitmapImage newbitmap = new(new Uri(sb.ToString()));
+                            Launcher.ImageResources.Add(self.CSOPartItem.ResourceName, newbitmap);
+                            self.CSOPartUri = newbitmap;
                         }
                     }
                     else
                     {
-                        self.PartUri = Launcher.Assets["partsrandom"];
+                        self.CSOPartUri = Launcher.Assets[NonePart];
                     }
                 }
             )
@@ -130,25 +148,5 @@ namespace CSOLauncher
         {
             Click?.Invoke(this, e);
         }
-    }
-
-    public partial class PartImageConverter : IValueConverter
-    {
-        object IValueConverter.Convert(object value, Type targetType, object parameter, string language)
-        {
-            if (value is BitmapImage)
-            {
-                var self = value as BitmapImage;
-                return self;
-            }
-            else if (value is WriteableBitmap)
-            {
-                var self = value as WriteableBitmap;
-                return self;
-            }
-            else return null;
-        }
-
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, string language) => null;
     }
 }

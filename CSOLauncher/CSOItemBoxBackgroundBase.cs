@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CSOLauncher
 {
-    public class CSOItemBackgroundBase
+    public class CSOItemBoxBackgroundBase
     {
         private const string PreName = "button_list";
         private const string PostName = "@n";
@@ -32,11 +32,11 @@ namespace CSOLauncher
             RedBrown = 6,
         }
 
-        public static string GetAssets(int FlyoutWidth, int FlyoutHeight, Color CurrentColor)
+        public static string GetAssets(int CSOPartFlyoutWidth, int CSOPartFlyoutHeight, Color CSOPartFlyoutBorderColor)
         {
-            int width = FlyoutWidth >= MinBackgroundSize ? FlyoutWidth : MinBackgroundSize;
-            int height = FlyoutHeight >= MinBackgroundSize ? FlyoutHeight : MinBackgroundSize;
-            string color = ColorString[(int)CurrentColor];
+            int width = CSOPartFlyoutWidth >= MinBackgroundSize ? CSOPartFlyoutWidth : MinBackgroundSize;
+            int height = CSOPartFlyoutHeight >= MinBackgroundSize ? CSOPartFlyoutHeight : MinBackgroundSize;
+            string color = ColorString[(int)CSOPartFlyoutBorderColor];
             StringBuilder tasknamebuilder = new();
             tasknamebuilder.Append(PreName).Append(Underline).Append(color).Append(At).Append(width).Append(Underline).Append(height);
             string taskname = tasknamebuilder.ToString();

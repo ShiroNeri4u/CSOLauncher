@@ -3,6 +3,7 @@ using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -610,11 +611,11 @@ namespace CSODataCore
         private static readonly Dictionary<string, List<int>> StringToId = [];
         private static readonly Dictionary<int, List<Item>> PaintDictionary = [];
         private static readonly Dictionary<int, Item> ReinforceDictionary = [];
-        private static readonly Dictionary<ItemPart, List<Item>> PartDictionary = new()
+        public static readonly Dictionary<ItemPart, List<Item>> PartDictionary = new()
         {
-            { ItemPart.WeaponType, new List<Item>() },
-            { ItemPart.KnifeType, new List<Item>() },
-            { ItemPart.SpecialType, new List<Item>() },
+            { ItemPart.WeaponType, new List<Item>(){ EmptyItem } },
+            { ItemPart.KnifeType, new List<Item>(){ EmptyItem } },
+            { ItemPart.SpecialType, new List<Item>(){ EmptyItem } },
         };
         private static readonly Dictionary<ItemGrade, List<Item>> ItemGradeDictionary = new()
         {
@@ -685,6 +686,7 @@ namespace CSODataCore
         private static readonly int[] WeaponTypeFilter = [4001, 4002, 4003, 4004, 4005, 4601];
         private static readonly int[] KnifeTypeFilter = [4081, 4082, 4083, 4084, 4085, 4616];
         private static readonly int[] SpecialTypeFilter = [4086, 4087, 4088, 4089, 4090, 4617, 4091, 4092, 4093, 4094, 4095, 4618];
+        private static readonly int[] DisablePartFilter = [4061, 4062, 4063, 4064, 4065];
         /// <summary>
         /// 导入item.csv路径 <see cref="string"/> 的值
         /// </summary>
@@ -731,7 +733,7 @@ namespace CSODataCore
                         byte num = (byte)item.ItemGrade;
                         ItemGradeDictionary[(ItemGrade)num].Add(item);
                     }
-                    if (item.SortingIndex == ItemSortingIndex.WeaponPart)
+                    if (item.SortingIndex == ItemSortingIndex.WeaponPart && Array.IndexOf(DisablePartFilter, item.Id) < 0)
                     {
                         if (Array.IndexOf(WeaponTypeFilter, item.Id) > -1)
                         {

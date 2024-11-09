@@ -63,10 +63,10 @@ namespace CSOLauncher
             set => SetValue(TextColorProperty, value);
         }
 
-        private WriteableBitmap CurrentBackground
+        private WriteableBitmap CSOPartFlyoutBorderBackground
         {
-            get => (WriteableBitmap)GetValue(CurrentBackgroundProperty);
-            set => SetValue(CurrentBackgroundProperty, value);
+            get => (WriteableBitmap)GetValue(CSOPartFlyoutBorderBackgroundProperty);
+            set => SetValue(CSOPartFlyoutBorderBackgroundProperty, value);
         }
 
         public enum Type : byte
@@ -89,13 +89,13 @@ namespace CSOLauncher
         private Task OnLoad()
         {
             GetBackground();
-            CurrentBackground = ButtonBackground[(int)Status.Normal];
+            CSOPartFlyoutBorderBackground = ButtonBackground[(int)Status.Normal];
             return Task.CompletedTask;
         }
 
         private void Set(Status status)
         {
-            CurrentBackground = ButtonBackground[(int)status];
+            CSOPartFlyoutBorderBackground = ButtonBackground[(int)status];
         }
 
         private string GetAssets(string status)
@@ -255,8 +255,8 @@ namespace CSOLauncher
             new PropertyMetadata(null)
         );
 
-        public static readonly DependencyProperty CurrentBackgroundProperty = DependencyProperty.Register(
-            nameof(CurrentBackground),
+        public static readonly DependencyProperty CSOPartFlyoutBorderBackgroundProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutBorderBackground),
             typeof(WriteableBitmap),
             typeof(CSOButtonBase),
             new PropertyMetadata(null)

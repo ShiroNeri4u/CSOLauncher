@@ -35,6 +35,9 @@
     {
         public Item Item { get; set; }
         public int Slot { get; set; }
+
+        public int GetData { get; set; }
+        public int DQData { get; set; }
         public ReinforceData? ReinforceData { get; set; }
         public Item? Paint { get; set; }
         public Item? Part1 { get; set; }

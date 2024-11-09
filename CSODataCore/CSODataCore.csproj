@@ -5,12 +5,24 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<PublishAot>true</PublishAot>
-	<Platforms>AnyCPU;x64</Platforms>
+	<Platforms>x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>Dlls\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="NARToolExtensionLib">
+      <HintPath>Dlls\NARToolExtensionLib.dll</HintPath>
+    </Reference>
+    <Reference Include="NARToolLib">
+      <HintPath>Dlls\NARToolLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -19,10 +19,10 @@
     >
 
         <Grid.Background>
-            <ImageBrush Stretch="None" ImageSource="{x:Bind CurrentBackground, Mode=OneWay}"></ImageBrush>
+            <ImageBrush Stretch="None" ImageSource="{x:Bind CSOPartFlyoutBorderBackground, Mode=OneWay}"></ImageBrush>
         </Grid.Background>
-        <local:CSOPartFlyout IsOpen="{x:Bind FlyoutIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind HorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind VerticalOffset, Mode=OneWay}" CurrentPart="{x:Bind PartItem, Mode=OneWay}" FlyoutWidth="245" CurrentColor="Grey" />
-        <local:CSOPartEditor IsOpen="{x:Bind EditorIsOpen, Mode=TwoWay}" HorizontalOffset="{x:Bind HorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind VerticalOffset, Mode=OneWay}" CurrentPart="{x:Bind PartItem, Mode=TwoWay}" PartItems="{x:Bind PartItems, Mode=OneWay}" FlyoutWidth="164" FlyoutHeight="300" CurrentColor="Grey" />
+        <local:CSOPartFlyout CSOPartFlyoutIsOpen="{x:Bind CSOPartFlyoutIsOpen, Mode=OneWay}" CSOPartFlyoutHorizontalOffset="{x:Bind CSOPartHorizontalOffset, Mode=OneWay}" CSOPartFlyoutVerticalOffset="{x:Bind CSOPartVerticalOffset, Mode=OneWay}" CSOPartItem="{x:Bind CSOPartItem, Mode=OneWay}" CSOPartFlyoutWidth="245" CSOPartFlyoutBorderColor="Grey" />
+        <local:CSOPartEditor CSOPartEditorIsOpen="{x:Bind CSOPartEditorIsOpen, Mode=TwoWay}" CSOPartEditorHorizontalOffset="{x:Bind CSOPartHorizontalOffset, Mode=OneWay}" CSOPartEditorVerticalOffset="{x:Bind CSOPartVerticalOffset, Mode=OneWay}" CSOPartItem="{x:Bind CSOPartItem, Mode=TwoWay}" CSOPartItems="{x:Bind CSOPartItems, Mode=OneWay}" CSOPartEditorWidth="164" CSOPartEditorHeight="300" CSOPartEditorBorderColor="Grey" />
     </Grid>
 
 </UserControl>

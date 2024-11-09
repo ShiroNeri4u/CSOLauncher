@@ -25,7 +25,7 @@
         <!--武器文字-->
         <Image x:Name="Part" Width="15" Height="17" Canvas.Left="6" Canvas.Top="82" Canvas.ZIndex="1" />
         <TextBlock x:Name="ItemName" Text="原神" Foreground="White" FontFamily="Assets\CSO\Font\calibrifzy4jw.ttf#CalibriFZY4JW" CharacterSpacing="50" TextDecorations="Underline" FontStretch="SemiExpanded"  FontSize="13.5"  Canvas.Left="21" Canvas.Top="82" Canvas.ZIndex="1"/>
-        <TextBlock x:Name="Data" Text="[无期限]" Foreground="#a8a8a8" FontFamily="Assets\CSO\Font\calibrifzy4jw.ttf#CalibriFZY4JW" CharacterSpacing="50" FontSize="10"  Canvas.Left="6" Canvas.Top="98" Canvas.ZIndex="1" />
+        <TextBlock x:Name="Date" Text="[无期限]" Foreground="#a8a8a8" FontFamily="Assets\CSO\Font\calibrifzy4jw.ttf#CalibriFZY4JW" CharacterSpacing="50" FontSize="10"  Canvas.Left="6" Canvas.Top="98" Canvas.ZIndex="1" />
         <local:CSOButtonBase ButtonWidth="77" CurrentType="Default" ButtonScale="0.687" ButtonContext="装备" TextColor="#8b7338" Canvas.ZIndex="3" Canvas.Left="177" Canvas.Top="110" />
         <local:CSOButtonBase ButtonWidth="77" CurrentType="Default" ButtonScale="0.6875" ButtonContext="涂装" TextColor="#8b7338" Canvas.ZIndex="3" Canvas.Left="123" Canvas.Top="110" />
     </Canvas>

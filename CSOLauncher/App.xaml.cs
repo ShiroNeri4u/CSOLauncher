@@ -28,10 +28,9 @@ namespace CSOLauncher
 
         public static readonly Dictionary<string, WriteableBitmap> Assets = [];
         public static readonly Dictionary<string, BitmapImage> ImageResources = [];
-
         private static readonly List<Task> LoadAssetsTask = [];
-
         private static readonly string[] Folders = ["Common", "zh-cn"];
+        public static string ResourceDirectory = @"D:\CSNZ\Item";
         private static async Task LoadAssets()
         {
             StorageFolder InstalledLocation = Package.Current.InstalledLocation;

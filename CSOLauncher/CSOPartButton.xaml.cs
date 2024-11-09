@@ -11,126 +11,119 @@ namespace CSOLauncher
 {
     public sealed partial class CSOPartButton : UserControl
     {
-        private WriteableBitmap CurrentBackground
+        private const string PostName = "_s";
+        private const string EmptySlot = "empty_slot";
+        private WriteableBitmap CSOPartFlyoutBorderBackground
         {
-            get => (WriteableBitmap)GetValue(CurrentBackgroundProperty);
-            set => SetValue(CurrentBackgroundProperty, value);
+            get => (WriteableBitmap)GetValue(CSOPartFlyoutBorderBackgroundProperty);
+            set => SetValue(CSOPartFlyoutBorderBackgroundProperty, value);
         }
-        private Item PartItem
+        private Item CSOPartItem
         {
             get => (Item)GetValue(CSOPartItemProperty);
             set => SetValue(CSOPartItemProperty, value);
         }
-        private ObservableCollection<Item> PartItems
+        private List<Item> CSOPartItems
         {
-            get => (ObservableCollection<Item>)GetValue(PartItemsProperty);
-            set => SetValue(PartItemsProperty, value);
+            get => (List<Item>)GetValue(CSOPartItemsProperty);
+            set => SetValue(CSOPartItemsProperty, value);
         }
 
-        private bool FlyoutIsOpen
+        private bool CSOPartFlyoutIsOpen
         {
-            get => (bool)GetValue(FlyoutIsOpenProperty);
-            set => SetValue(FlyoutIsOpenProperty, value);
+            get => (bool)GetValue(CSOPartFlyoutIsOpenProperty);
+            set => SetValue(CSOPartFlyoutIsOpenProperty, value);
         }
 
-        private bool EditorIsOpen
+        private bool CSOPartEditorIsOpen
         {
-            get => (bool)GetValue(EditorIsOpenProperty);
-            set => SetValue(EditorIsOpenProperty, value);
+            get => (bool)GetValue(CSOPartEditorIsOpenProperty);
+            set => SetValue(CSOPartEditorIsOpenProperty, value);
         }
 
-        private double HorizontalOffset
+        private double CSOPartHorizontalOffset
         {
-            get => (double)GetValue(HorizontalOffsetProperty);
-            set => SetValue(HorizontalOffsetProperty, value);
+            get => (double)GetValue(CSOPartHorizontalOffsetProperty);
+            set => SetValue(CSOPartHorizontalOffsetProperty, value);
         }
 
-        private double VerticalOffset
+        private double CSOPartVerticalOffset
         {
-            get => (double)GetValue(VerticalOffsetProperty);
-            set => SetValue(VerticalOffsetProperty, value);
+            get => (double)GetValue(CSOPartVerticalOffsetProperty);
+            set => SetValue(CSOPartVerticalOffsetProperty, value);
         }
 
         public CSOPartButton()
         {
             this.InitializeComponent();
-            PartItem = ItemManager.EmptyItem;
+            CSOPartItem = ItemManager.EmptyItem;
         }
 
-        public static readonly DependencyProperty CurrentBackgroundProperty = DependencyProperty.Register(
-            nameof(CurrentBackground),
+        public static readonly DependencyProperty CSOPartFlyoutBorderBackgroundProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutBorderBackground),
             typeof(WriteableBitmap),
             typeof(CSOPartButton),
             new PropertyMetadata(null)
         );
 
         public static readonly DependencyProperty CSOPartItemProperty = DependencyProperty.Register(
-            nameof(PartItem),
+            nameof(CSOPartItem),
             typeof(Item),
             typeof(CSOPartButton),
             new PropertyMetadata(null,
                 static (DependencyObject obj, DependencyPropertyChangedEventArgs e) =>
                 {
                     var self = obj as CSOPartButton;
-                    if (!self.PartItem.IsEmpty)
+                    if (!self.CSOPartItem.IsEmpty)
                     {
-                        if(Launcher.Assets.TryGetValue(self.PartItem.ResourceName.ToLower() + "_s", out WriteableBitmap bitmap))
+                        if(Launcher.Assets.TryGetValue(self.CSOPartItem.ResourceName.ToLower() + PostName, out WriteableBitmap bitmap))
                         {
-                            self.CurrentBackground = bitmap;
+                            self.CSOPartFlyoutBorderBackground = bitmap;
                         }
                         else
                         {
-                            self.CurrentBackground = Launcher.Assets["empty_slot"];
+                            self.CSOPartFlyoutBorderBackground = Launcher.Assets[EmptySlot];
                         }
                     }
                     else
                     {
-                        self.CurrentBackground = Launcher.Assets["empty_slot"];
+                        self.CSOPartFlyoutBorderBackground = Launcher.Assets[EmptySlot];
                     }
-                    List<Item> items = [];
-                    items.Add(ItemManager.EmptyItem);
-                    foreach (Item item in ItemManager.Search(ItemPart.WeaponType))
-                    {
-                        if(!item.IsEmpty)
-                        {
-                            items.Add(item);
-                        }
-                    }
-                    self.PartItems = [.. items];
+                    self.CSOPartItems = ItemManager.PartDictionary[ItemPart.WeaponType];
                 }
             )
         );
 
-        private static readonly DependencyProperty PartItemsProperty = DependencyProperty.Register(
-            nameof(PartItems),
-            typeof(ObservableCollection<Item>),
+        private static readonly DependencyProperty CSOPartItemsProperty = DependencyProperty.Register(
+            nameof(CSOPartItems),
+            typeof(List<Item>),
             typeof(CSOPartButton),
             new PropertyMetadata(null)
         );
 
-        public static readonly DependencyProperty FlyoutIsOpenProperty = DependencyProperty.Register(
-            nameof(FlyoutIsOpen),
+        public static readonly DependencyProperty CSOPartFlyoutIsOpenProperty = DependencyProperty.Register(
+            nameof(CSOPartFlyoutIsOpen),
             typeof(bool),
             typeof(CSOPartButton),
             new PropertyMetadata(null)
         );
 
-        public static readonly DependencyProperty EditorIsOpenProperty = DependencyProperty.Register(
-            nameof(EditorIsOpen),
+        public static readonly DependencyProperty CSOPartEditorIsOpenProperty = DependencyProperty.Register(
+            nameof(CSOPartEditorIsOpen),
             typeof(bool),
             typeof(CSOPartButton),
             new PropertyMetadata(null)
         );
 
-        private static readonly DependencyProperty HorizontalOffsetProperty = DependencyProperty.Register(
-            nameof(HorizontalOffset),
+        private static readonly DependencyProperty CSOPartHorizontalOffsetProperty = DependencyProperty.Register(
+            nameof(CSOPartHorizontalOffset),
             typeof(double),
             typeof(CSOPartButton),
             new PropertyMetadata(null)
         );
 
-        private static readonly DependencyProperty VerticalOffsetProperty = DependencyProperty.Register(
-            nameof(VerticalOffset),
+        private static readonly DependencyProperty CSOPartVerticalOffsetProperty = DependencyProperty.Register(
+            nameof(CSOPartVerticalOffset),
             typeof(double),
             typeof(CSOPartButton),
             new PropertyMetadata(null)
@@ -138,26 +131,26 @@ namespace CSOLauncher
 
         private void OnPointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            if (!EditorIsOpen)
+            if (!CSOPartEditorIsOpen)
             {
-                FlyoutIsOpen = true;
+                CSOPartFlyoutIsOpen = true;
             }
         }
 
         private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            FlyoutIsOpen = false;
+            CSOPartFlyoutIsOpen = false;
         }
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            FlyoutIsOpen = false;
-            EditorIsOpen = true;
+            CSOPartFlyoutIsOpen = false;
+            CSOPartEditorIsOpen = true;
         }
 
         private void OnPointerExited(object sender, PointerRoutedEventArgs e)
         {
-            FlyoutIsOpen = false;
+            CSOPartFlyoutIsOpen = false;
         }
 
         private void OnPointerCanceled(object sender, PointerRoutedEventArgs e)
@@ -172,21 +165,21 @@ namespace CSOLauncher
 
         private void OnPointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (FlyoutIsOpen)
+            if (CSOPartFlyoutIsOpen)
             {
                 var pointerPoint = e.GetCurrentPoint(this);
                 Point position = pointerPoint.Position;
                 //var rect = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
                 //在右侧有足够的空间
-                //if( rect.Width - position.X + rect.X > FlyoutWidth)
+                //if( rect.Width - position.X + rect.X > CSOPartFlyoutWidth)
                 //{
-                    HorizontalOffset = position.X;
-                    VerticalOffset = position.Y + 1;
+                    CSOPartHorizontalOffset = position.X;
+                    CSOPartVerticalOffset = position.Y + 1;
                 //}
                 //else
                 //{
-                    //CSOFlyout.HorizontalOffset = position.X + FlyoutWidth;
-                    //CSOFlyout.VerticalOffset = position.Y + 1;
+                    //CSOFlyout.CSOPartHorizontalOffset = position.X + CSOPartFlyoutWidth;
+                    //CSOFlyout.CSOPartVerticalOffset = position.Y + 1;
                 //}
             }
         }

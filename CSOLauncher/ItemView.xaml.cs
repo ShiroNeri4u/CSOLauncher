@@ -1,20 +1,25 @@
 using CSODataCore;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace CSOLauncher
 {
     public sealed partial class ItemView : UserControl
     {
-        public ItemView()
-        {
-            this.InitializeComponent();
-        }
-
-        public ItemData ItemData
+        public ItemData Data
         {
             get => (ItemData)GetValue(CSOItemDataProperty);
             set => SetValue(CSOItemDataProperty, value);
+        }
+        private BitmapImage CurrentImage
+        {
+            get => (BitmapImage)GetValue(CSOItemDataProperty);
+            set => SetValue(CSOItemDataProperty, value);
+        }
+        public ItemView()
+        {
+            this.InitializeComponent();
         }
 
         public static readonly DependencyProperty CSOItemDataProperty = DependencyProperty.Register(

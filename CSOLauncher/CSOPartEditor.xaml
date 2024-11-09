@@ -8,22 +8,21 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local1="using:CSODataCore"
     mc:Ignorable="d">
 
-    <Popup IsOpen="{x:Bind IsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind HorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind VerticalOffset, Mode=OneWay}" AllowFocusOnInteraction="True" AllowFocusWhenDisabled="False">
-        <Grid Width="{x:Bind FlyoutWidth, Mode=OneWay}" Height="{x:Bind FlyoutHeight, Mode=OneWay}">
+    <Popup IsOpen="{x:Bind CSOPartEditorIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind CSOPartEditorHorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind CSOPartEditorVerticalOffset, Mode=OneWay}" AllowFocusOnInteraction="True" AllowFocusWhenDisabled="False">
+        <Grid Width="{x:Bind CSOPartEditorWidth, Mode=OneWay}" Height="{x:Bind CSOPartEditorHeight, Mode=OneWay}">
             <Grid.Background>
-                <ImageBrush Stretch="None" ImageSource="{x:Bind CurrentBackground, Mode=OneWay}"></ImageBrush>
+                <ImageBrush Stretch="None" ImageSource="{x:Bind CSOPartEditorBackground, Mode=OneWay}"></ImageBrush>
             </Grid.Background>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Width="{x:Bind ScrollViewerWidth}" Height="{x:Bind ScrollViewerHeight}">
-                <ItemsControl x:Name="PartItemsControl" ItemsSource="{x:Bind PartItems, Mode=OneWay}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Width="{x:Bind CSOPartEditorScrollViewerWidth}" Height="{x:Bind CSOPartEditorScrollViewerHeight}">
+                <ItemsControl x:Name="PartItemsControl" ItemsSource="{x:Bind CSOPartItems, Mode=OneWay}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" />
+                            <StackPanel Orientation="Vertical"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="local1:Item">
-                            <local:CSOPartView PartItem="{x:Bind}" Click="OnPartSelectionChanged" >
-                            </local:CSOPartView>
+                            <local:CSOPartView CSOPartItem="{x:Bind}" Click="OnPartSelectionChanged"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
