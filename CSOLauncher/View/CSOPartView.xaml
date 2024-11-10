@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CSOLauncher.View.CSOPartView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CSOLauncher.View"
+    xmlns:ViewModel="using:CSOLauncher.CSOViewModel"
+    xmlns:Converter="using:CSOLauncher.DrawMethod"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Converter:ImageSourceConverter x:Key="ImageSourceConverter"></Converter:ImageSourceConverter>
+        <DataTemplate x:Key="CSOPartView" x:DataType="ViewModel:CSOPartData">
+            <Grid Width="140" Height="89.6" Tapped="SelectPartItem" Tag="{x:Bind CSOPartItem}">
+                <Grid.RenderTransform>
+                    <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
+                </Grid.RenderTransform>
+                <Canvas Width="200" Height="128">
+                    <!--底层-->
+                    <Image Width="200" Height="128" Source="{x:Bind CSOItemBoxBottom, Mode=OneTime}" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="0"/>
+                    <!--图标-->
+                    <Image Width="135" Height="81" Source="{x:Bind CSOPartUri, Converter={StaticResource ImageSourceConverter} , Mode=OneTime}" Stretch="Fill" Canvas.Left="32.5" Canvas.Top="13" Canvas.ZIndex="1"/>
+                    <!--配件名字-->
+                    <TextBlock Text="{x:Bind CSOPartName, Mode=OneTime}" Canvas.Left="20" Canvas.Top="90" Canvas.ZIndex="1" FontFamily="{StaticResource CSOFont}" FontSize="13" Foreground="White" CharacterSpacing="50" TextDecorations="Underline"/>
+                    <!--边框-->
+                    <Image Width="200" Height="128" Source="{x:Bind CSOItemBoxBorder, Mode=OneTime}" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="2"/>
+                </Canvas>
+            </Grid>
+        </DataTemplate>
+        <StackLayout x:Name="VerticalStackLayout" Orientation="Vertical" Spacing="0"/>
+    </UserControl.Resources>
+
+    <Grid
+        Width="32" 
+        Height="32"
+        PointerEntered="OnPointerEntered"
+        PointerPressed="OnPointerPressed"
+        PointerReleased="OnPointerReleased"
+        PointerExited="OnPointerExited"
+        PointerCanceled="OnPointerCanceled"
+        PointerCaptureLost="OnPointerCaptureLost"
+        PointerMoved="OnPointerMoved">
+
+        <Grid.Background>
+            <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel.CSOPartBackground, Mode=OneWay}"></ImageBrush>
+        </Grid.Background>
+        
+       <!--信息浮窗-->
+        <Popup IsOpen="{x:Bind ViewModel.CSOPartFlyoutIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind CSOPartHorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind CSOPartVerticalOffset, Mode=OneWay}" IsHitTestVisible="False">
+            <Grid Width="245" Height="{x:Bind ViewModel.CSOPartFlyoutHeight, Mode=OneWay}" IsHitTestVisible="False">
+                <Grid.Background>
+                    <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel.CSOPartFlyoutBorder, Mode=OneWay}"></ImageBrush>
+                </Grid.Background>
+                <StackPanel Orientation="Vertical" Margin="12,12,12,17">
+                    <TextBlock
+                    Text="{x:Bind ViewModel.CSOPartName, Mode=OneWay}" 
+                    Foreground="White" 
+                    FontFamily="{StaticResource CSOFont}" 
+                    CharacterSpacing="50" 
+                    TextDecorations="Underline" 
+                    FontSize="13.0"
+                    Visibility="{x:Bind ViewModel.CSOPartNameVisibility, Mode=OneWay}"
+                    Margin="0,0,0,12"/>
+                    <TextBlock
+                    Text="{x:Bind ViewModel.CSOPartDescription, Mode=OneWay}" 
+                    Foreground="#a8a8a8" 
+                    FontFamily="{StaticResource CSOFont}" 
+                    CharacterSpacing="50" 
+                    FontSize="12.0"
+                    TextWrapping="WrapWholeWords"/>
+                </StackPanel>
+            </Grid>
+        </Popup>
+        
+        <!--编辑器-->
+        <Popup IsOpen="{x:Bind ViewModel.CSOPartEditorIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind CSOPartHorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind CSOPartVerticalOffset, Mode=OneWay}" AllowFocusOnInteraction="True" AllowFocusWhenDisabled="False">
+        <Grid Width="164" Height="300">
+            <Grid.Background>
+                <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel:CSOPartViewModel.CSOPartEditorBorder, Mode=OneTime}"></ImageBrush>
+            </Grid.Background>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Width="164" Height="290">
+                    <ItemsRepeater Layout="{StaticResource VerticalStackLayout}" ItemTemplate="{StaticResource CSOPartView}" ItemsSource="{x:Bind ViewModel.CSOPartItemGroup, Mode=OneWay}"/>
+            </ScrollViewer>
+        </Grid>
+        </Popup>
+    </Grid>
+</UserControl>

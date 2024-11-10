@@ -7,9 +7,9 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSOLauncher
+namespace CSOLauncher.DrawMethod
 {
-    public class CSOFlyoutBase
+    public class CSOFlyout
     {
         private const string PreName = "pulldown";
         private const string PostName = "@n";

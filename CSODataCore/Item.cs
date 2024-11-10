@@ -376,7 +376,7 @@ namespace CSODataCore
         /// <summary>
         /// 名称
         /// </summary>
-        public string? Name { get; set; }
+        public required string Name { get; set; }
         /// <summary>
         /// 翻译名称
         /// </summary>
@@ -388,7 +388,7 @@ namespace CSODataCore
         /// <summary>
         /// 资源Id
         /// </summary>
-        public string? ResourceName { get; set; }
+        public required string ResourceName { get; set; }
         /// <summary>
         /// 分类(验证一些物品用)
         /// </summary>
@@ -396,19 +396,19 @@ namespace CSODataCore
         /// <summary>
         /// 使用阵营
         /// </summary>
-        public ItemTeam Team { get; set; }
+        public required ItemTeam Team { get; set; }
         /// <summary>
         /// 装备数据
         /// </summary>
-        public WeaponInfomation? WeaponInfomation { get; set; }
+        public Infomation? Infomation { get; set; }
         /// <summary>
         /// 是否是期限制道具
         /// </summary>
-        public bool Period { get; set; }
+        public required bool Period { get; set; }
         /// <summary>
         /// 是否是游戏内的物品
         /// </summary>
-        public bool InGameItem { get; set; }
+        public required bool InGameItem { get; set; }
         /// <summary>
         /// 物品索引
         /// </summary>
@@ -423,9 +423,9 @@ namespace CSODataCore
         public bool IsEmpty = false;
     }
 
-    public sealed class WeaponInfomationMap : ClassMap<WeaponInfomation>
+    public sealed class InfomationMap : ClassMap<Infomation>
     {
-        public WeaponInfomationMap()
+        public InfomationMap()
         {
             Map(m => m.Damage).Index(21).TypeConverter<CostomConverter<byte[]>>();
             Map(m => m.HitRate).Index(22).TypeConverter<CostomConverter<byte[]>>();
@@ -444,7 +444,7 @@ namespace CSODataCore
     /// <summary>
     /// 装备数据
     /// </summary>
-    public sealed class WeaponInfomation
+    public sealed class Infomation
     {
         /// <summary>
         /// 伤害
@@ -559,7 +559,7 @@ namespace CSODataCore
         {
             if (text != null && text != "")
             {
-                string[] data = text.Split(',');
+                string[] data = text.Replace(" ", "").Split(',');
                 if (typeof(T) == typeof(byte[]))
                 {
                     byte[] bytes = new byte[data.Length];
@@ -603,6 +603,11 @@ namespace CSODataCore
     {
         public static readonly Item EmptyItem = new()
         {
+            Name = "null",
+            ResourceName = "null",
+            Team = ItemTeam.All,
+            Period = false,
+            InGameItem = false,
             IsEmpty = true,
             ItemGrade = ItemGrade.None,
         };
@@ -707,14 +712,14 @@ namespace CSODataCore
                 csv.Context.TypeConverterCache.AddConverter<byte[]>(new CostomConverter<byte[]>());
                 csv.Context.TypeConverterCache.AddConverter<int[]>(new CostomConverter<int[]>());
                 csv.Context.RegisterClassMap<ItemMap>();
-                csv.Context.RegisterClassMap<WeaponInfomationMap>();
+                csv.Context.RegisterClassMap<InfomationMap>();
 
                 while (csv.Read())
                 {
                     Item item = csv.GetRecord<Item>();
                     if ((int)item.SortingIndex < 10)
                     {
-                        item.WeaponInfomation = csv.GetRecord<WeaponInfomation>();
+                        item.Infomation = csv.GetRecord<Infomation>();
                     }
                     ItemDictionary.Add(item.Id, item);
                     if (item.Name != null)
@@ -779,7 +784,7 @@ namespace CSODataCore
                 while (csv.Read())
                 {
                     int id = csv.GetField<int>(0);
-                    WeaponInfomation? info = ItemDictionary[id].WeaponInfomation;
+                    Infomation? info = ItemDictionary[id].Infomation;
                     if (info != null)
                     {
                         info.Reinforce = csv.GetRecord<Reinforce>();
@@ -808,10 +813,10 @@ namespace CSODataCore
                             var id = int.Parse(x.Key);
                             var item = ItemDictionary[id];
                             var jObjt = jObjSummary["Paints"];
-                            if (item.WeaponInfomation != null && jObjt != null)
+                            if (item.Infomation != null && jObjt != null)
                             {
-                                item.WeaponInfomation.Paints = jObjt.ToObject<int[]>();
-                                var info = item.WeaponInfomation.Paints;
+                                item.Infomation.Paints = jObjt.ToObject<int[]>();
+                                var info = item.Infomation.Paints;
                                 if (info != null )
                                 {
                                     foreach (int i in info)

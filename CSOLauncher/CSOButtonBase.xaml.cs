@@ -31,7 +31,7 @@ namespace CSOLauncher
         private const int MinButtonWidth = 18;
         private int LoadCount = 0;
         private readonly WriteableBitmap[] ButtonBackground = new WriteableBitmap[3];
-        public event RoutedEventHandler Click;
+        public event RoutedEventHandler? Click;
 
         public int ButtonWidth
         {

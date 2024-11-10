@@ -7,9 +7,9 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSOLauncher
+namespace CSOLauncher.DrawMethod
 {
-    public class CSOItemBoxBackgroundBase
+    public class CSOItemBoxBottom
     {
         private const string PreName = "button_list";
         private const string PostName = "@n";

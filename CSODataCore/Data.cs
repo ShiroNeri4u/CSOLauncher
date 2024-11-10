@@ -31,10 +31,10 @@
         /// </summary>
         public byte? OverDmg { get; set; }
     }
-    public sealed class ItemData
+    public sealed class ItemData(Item item, int slot)
     {
-        public Item Item { get; set; }
-        public int Slot { get; set; }
+        public Item Item { get; set; } = item;
+        public int Slot { get; set; } = slot;
 
         public int GetData { get; set; }
         public int DQData { get; set; }
@@ -42,11 +42,5 @@
         public Item? Paint { get; set; }
         public Item? Part1 { get; set; }
         public Item? Part2 { get; set; }
-
-        public ItemData(Item item, int slot)
-        {
-            Item = item;
-            Slot = slot;
-        }
     }
 }
