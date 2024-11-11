@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:CSOLauncher.View"
-    xmlns:ViewModel="using:CSOLauncher.CSOViewModel"
+    xmlns:ViewModel="using:CSOLauncher.ViewModels"
     xmlns:Converter="using:CSOLauncher.DrawMethod"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -80,8 +80,8 @@
             <Grid.Background>
                 <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel:CSOPartViewModel.CSOPartEditorBorder, Mode=OneTime}"></ImageBrush>
             </Grid.Background>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Width="164" Height="290">
-                    <ItemsRepeater Layout="{StaticResource VerticalStackLayout}" ItemTemplate="{StaticResource CSOPartView}" ItemsSource="{x:Bind ViewModel.CSOPartItemGroup, Mode=OneWay}"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Width="150" Height="220">
+                    <ItemsRepeater Layout="{StaticResource VerticalStackLayout}" ItemTemplate="{StaticResource CSOPartView}" ItemsSource="{x:Bind ViewModel.CSOPartItemGroup, Mode=OneWay}" HorizontalAlignment="Left"/>
             </ScrollViewer>
         </Grid>
         </Popup>

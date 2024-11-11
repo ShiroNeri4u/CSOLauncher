@@ -1,6 +1,7 @@
 using CSODataCore;
 using Microsoft.UI.Xaml;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -17,6 +18,21 @@ namespace CSOLauncher
             Team.Source = Launcher.Assets["teamtype0"];
             Part.Source = Launcher.Assets["partsweapon_icon"];
             Enchant.Source = Launcher.Assets["enchant"];
+            int count = 0;
+            foreach(Item item in ItemManager.ItemDictionary.Values)
+            {
+                if(item.Infomation != null)
+                {
+                    if(item.Infomation.Reinforce != null)
+                    {
+                        if(item.Infomation.Reinforce.TotalMaxLv < 6)
+                        {
+                            count++;
+                        }
+                    }
+                }
+            }
+            Debug.WriteLine(count);
             Item[] items = ItemManager.Search(1);
             Name.Text = items[0].TransName;
         }

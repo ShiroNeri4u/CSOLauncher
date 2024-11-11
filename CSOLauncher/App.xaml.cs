@@ -3,8 +3,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -23,7 +25,7 @@ namespace CSOLauncher
 
         private static readonly DecoderOptions Options = new()
         {
-            SkipMetadata = true,
+            SkipMetadata = false,
         };
 
         public static readonly Dictionary<string, WriteableBitmap> Assets = [];
@@ -69,7 +71,7 @@ namespace CSOLauncher
             string resourcesname = System.IO.Path.GetFileNameWithoutExtension(uri.LocalPath);
             using IRandomAccessStream stream = await file.OpenReadAsync();
             using MemoryStream memstream = new();
-            using SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(Options, stream.AsStreamForRead());
+            using SixLabors.ImageSharp.Image<Bgra32> image = SixLabors.ImageSharp.Image.Load<Bgra32>(Options, stream.AsStreamForRead());
             {
                 WriteableBitmap bitmap = new(image.Width, image.Height);
                 image.SaveAsPng(memstream);

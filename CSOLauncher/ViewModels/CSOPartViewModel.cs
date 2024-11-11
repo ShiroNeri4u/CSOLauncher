@@ -5,13 +5,12 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 
-namespace CSOLauncher.CSOViewModel
+namespace CSOLauncher.ViewModels
 {
     public partial class CSOPartViewModel : ObservableObject
     {
@@ -22,9 +21,9 @@ namespace CSOLauncher.CSOViewModel
         private const string OldNewLine = @"\n";
         private const string NewLine = "\n";
         private const int CSOPartFlyoutWidth = 245;
-        private static readonly FontFamily CSOFont = (FontFamily) Microsoft.UI.Xaml.Application.Current.Resources["CSOFont"];
+        private static readonly FontFamily CSOFont = (FontFamily)Microsoft.UI.Xaml.Application.Current.Resources["CSOFont"];
         private const CSOFlyout.Color Color = CSOFlyout.Color.Grey;
-        public static readonly WriteableBitmap CSOPartEditorBorder = Launcher.Assets[CSOFlyout.GetAssets(164, 300, Color)];
+        public static readonly WriteableBitmap CSOPartEditorBorder = Launcher.Assets[CSOFlyout.GetAssets(150, 230, Color)];
         public static readonly Dictionary<ItemPart, List<CSOPartData>> CSOPartgroupDictionary = new()
         {
             {ItemPart.Disable, new () },
@@ -79,19 +78,19 @@ namespace CSOLauncher.CSOViewModel
         [ObservableProperty]
         private bool _CSOPartEditorIsOpen;
 
-        private List<CSOPartData> GetPartType ()
+        private List<CSOPartData> GetPartType()
         {
             ItemPart part;
             if (CSOItem != null)
             {
-                if(CSOItem.Infomation != null)
+                if (CSOItem.Infomation != null)
                 {
                     part = CSOItem.Infomation.Part;
                 }
                 else part = ItemPart.Disable;
             }
             else part = ItemPart.Disable;
-            if(CSOPartgroupDictionary.TryGetValue(part, out var list))
+            if (CSOPartgroupDictionary.TryGetValue(part, out var list))
             {
                 return list ?? [];
             }
@@ -101,11 +100,11 @@ namespace CSOLauncher.CSOViewModel
             }
         }
 
-        private string GetName ()
+        private string GetName()
         {
             if (CSOPartItem != null)
             {
-                if(!CSOPartItem.IsEmpty)
+                if (!CSOPartItem.IsEmpty)
                 {
                     return CSOPartItem.TransName ?? CSOPartItem.Name;
                 }

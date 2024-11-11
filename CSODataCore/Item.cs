@@ -497,7 +497,7 @@ namespace CSODataCore
         /// <summary>
         /// 武器涂装
         /// </summary>
-        public int[]? Paints { get; set; }
+        public List<Item>? Paints { get; set; }
 
     }
     public sealed class ReinforceMap : ClassMap<Reinforce>
@@ -612,17 +612,17 @@ namespace CSODataCore
             ItemGrade = ItemGrade.None,
         };
         private const string PreName = "CSO_Item_Name_";
-        private static readonly Dictionary<int, Item> ItemDictionary = [];
-        private static readonly Dictionary<string, List<int>> StringToId = [];
-        private static readonly Dictionary<int, List<Item>> PaintDictionary = [];
-        private static readonly Dictionary<int, Item> ReinforceDictionary = [];
+        public static readonly Dictionary<int, Item> ItemDictionary = [];
+        public static readonly Dictionary<string, List<int>> StringToId = [];
+        public static readonly Dictionary<int, List<Item>> PaintDictionary = [];
+        public static readonly Dictionary<int, Item> ReinforceDictionary = [];
         public static readonly Dictionary<ItemPart, List<Item>> PartDictionary = new()
         {
             { ItemPart.WeaponType, new List<Item>(){ EmptyItem } },
             { ItemPart.KnifeType, new List<Item>(){ EmptyItem } },
             { ItemPart.SpecialType, new List<Item>(){ EmptyItem } },
         };
-        private static readonly Dictionary<ItemGrade, List<Item>> ItemGradeDictionary = new()
+        public static readonly Dictionary<ItemGrade, List<Item>> ItemGradeDictionary = new()
         {
             { ItemGrade.None, new List<Item>() },
             { ItemGrade.Normal, new List<Item>() },
@@ -633,7 +633,7 @@ namespace CSODataCore
             { ItemGrade.Legendary, new List<Item>() },
             { ItemGrade.Special, new List<Item>() },
         };
-        private static readonly Dictionary<ItemSortingIndex, List<Item>> SortIndexDictionary = new()
+        public static readonly Dictionary<ItemSortingIndex, List<Item>> SortIndexDictionary = new()
         {
             { ItemSortingIndex.BoxWeapon, new List<Item>() },
             { ItemSortingIndex.SubMachineGun, new List<Item>() },
@@ -803,7 +803,6 @@ namespace CSODataCore
                 JObject jObjRoot = (JObject)jObj;
                 foreach (var x in jObjRoot)
                 {
-                    List<Item> items = [];
                     if (x.Key != "Version")
                     {
                         var jObjs = jObjRoot[x.Key];
@@ -815,12 +814,20 @@ namespace CSODataCore
                             var jObjt = jObjSummary["Paints"];
                             if (item.Infomation != null && jObjt != null)
                             {
-                                item.Infomation.Paints = jObjt.ToObject<int[]>();
-                                var info = item.Infomation.Paints;
+                                
+                                int[]? info = jObjt.ToObject<int[]>();
+                                item.Infomation.Paints = [];
                                 if (info != null )
                                 {
                                     foreach (int i in info)
                                     {
+                                        if (ItemDictionary.TryGetValue(i, out Item? paintitem))
+                                        {
+                                            if ( paintitem != null )
+                                            {
+                                                item.Infomation.Paints.Add(paintitem);
+                                            }
+                                        }
                                         if (PaintDictionary.TryGetValue(i, out _))
                                         {
                                             PaintDictionary[i].Add(ItemDictionary[id]);
