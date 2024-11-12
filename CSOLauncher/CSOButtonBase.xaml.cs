@@ -1,3 +1,4 @@
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -269,13 +270,21 @@ namespace CSOLauncher
 
         private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            Set(Status.Click);
+            var pointerPoint = e.GetCurrentPoint(this);
+            if (pointerPoint.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+            {
+                Set(Status.Click);
+            }
         }
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            Set(Status.On);
-            Click?.Invoke(this, e);
+            var pointerPoint = e.GetCurrentPoint(this);
+            if (pointerPoint.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            {
+                Set(Status.On);
+                Click?.Invoke(this, e);
+            }
         }
 
         private void OnPointerExited(object sender, PointerRoutedEventArgs e)

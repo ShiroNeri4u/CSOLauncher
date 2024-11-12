@@ -433,10 +433,10 @@ namespace CSODataCore
             Map(m => m.FiringSpeed).Index(24).TypeConverter<CostomConverter<byte[]>>();
             Map(m => m.Weight).Index(25).TypeConverter<CostomConverter<byte[]>>();
             Map(m => m.ItemGradeMode).Index(48).TypeConverter<CostomConverter<byte[]>>();
-            Map(m => m.ZomibeDamage).Index(49).TypeConverter<CostomConverter<int[]>>();
-            Map(m => m.ScenDamage).Index(50).TypeConverter<CostomConverter<int[]>>();
+            Map(m => m.Zombie_Damage).Index(49).TypeConverter<CostomConverter<int[]>>();
+            Map(m => m.Scen_Damage).Index(50).TypeConverter<CostomConverter<int[]>>();
             Map(m => m.KnockBack).Index(51).TypeConverter<CostomConverter<byte[]>>();
-            Map(m => m.Delay).Index(52).TypeConverter<CostomConverter<byte[]>>();
+            Map(m => m.Zombie_Delay).Index(52).TypeConverter<CostomConverter<byte[]>>();
             Map(m => m.Part).Index(54);
         }
     }
@@ -469,11 +469,11 @@ namespace CSODataCore
         /// <summary>
         /// 生化伤害
         /// </summary>
-        public int[]? ZomibeDamage { get; set; }
+        public int[]? Zombie_Damage { get; set; }
         /// <summary>
         /// 大灾变伤害
         /// </summary>
-        public int[]? ScenDamage { get; set; }
+        public int[]? Scen_Damage { get; set; }
         /// <summary>
         /// 生化击退
         /// </summary>
@@ -481,7 +481,7 @@ namespace CSODataCore
         /// <summary>
         /// 生化定身
         /// </summary>
-        public byte[]? Delay { get; set; }
+        public byte[]? Zombie_Delay { get; set; }
         /// <summary>
         /// 武器评级
         /// </summary>
@@ -507,9 +507,9 @@ namespace CSODataCore
             Map(m => m.TotalMaxLv).Index(1);
             Map(m => m.Damage).Index(2);
             Map(m => m.Accuracy).Index(3);
-            Map(m => m.KickBack).Index(4);
-            Map(m => m.Wegiht).Index(5);
-            Map(m => m.FireRate).Index(6);
+            Map(m => m.Rebound).Index(4);
+            Map(m => m.Weight).Index(5);
+            Map(m => m.Repeatedly).Index(6);
             Map(m => m.Ammo).Index(7);
             Map(m => m.OverDmg).Index(8);
         }
@@ -534,15 +534,15 @@ namespace CSODataCore
         /// <summary>
         /// 后坐力
         /// </summary>
-        public byte KickBack { get; set; }
+        public byte Rebound { get; set; }
         /// <summary>
         /// 重量
         /// </summary>
-        public byte Wegiht { get; set; }
+        public byte Weight { get; set; }
         /// <summary>
         /// 射速
         /// </summary>
-        public byte FireRate { get; set; }
+        public byte Repeatedly { get; set; }
         /// <summary>
         /// 填弹数
         /// </summary>

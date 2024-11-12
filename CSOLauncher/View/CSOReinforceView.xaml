@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CSOLauncher.View.CSOReinforceView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CSOLauncher.View"
+    xmlns:ViewModel="using:CSOLauncher.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="CSOReinforceDataView" x:DataType="ViewModel:ReinforceDataView">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{x:Bind TagName, Mode=OneWay}" Foreground="White" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" Width="40"/>
+                <ItemsRepeater Layout="{StaticResource HorizontalStackLayout}" ItemsSource="{x:Bind Reinforcebox, Mode=OneWay}" Width="110">
+                    <DataTemplate x:DataType="WriteableBitmap">
+                        <Image Source="{x:Bind}" Width="21" Height="5" Stretch="None" />
+                    </DataTemplate>
+                </ItemsRepeater>
+                <TextBlock Text="{x:Bind VauleTag, Mode=OneWay}" Foreground="White" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" Width="20"/>
+                <Canvas>
+                    <Image 
+                        Width="18"
+                        Height="20"
+                        Source="{x:Bind CurrentButtonLeft, Mode=OneWay}"
+                        Visibility="{x:Bind LeftVisibility, Mode=OneWay}"
+                        Tag="{x:Bind}"
+                        PointerEntered="LeftPointerEntered"
+                        PointerPressed="LeftPointerPressed"
+                        PointerReleased="LeftPointerReleased"
+                        PointerExited="LeftPointerExited"
+                        PointerCanceled="LeftPointerCanceled"
+                        PointerCaptureLost="LeftPointerCaptureLost"/>
+                    <Image 
+                        Canvas.Left="18"
+                        Width="18"
+                        Height="20"
+                        Source="{x:Bind CurrentButtonRight, Mode=OneWay}"
+                        Visibility="{x:Bind RightVisibility, Mode=OneWay}"
+                        Tag="{x:Bind}"
+                        PointerEntered="RightPointerEntered"
+                        PointerPressed="RightPointerPressed"
+                        PointerReleased="RightPointerReleased"
+                        PointerExited="RightPointerExited"
+                        PointerCanceled="RightPointerCanceled"
+                        PointerCaptureLost="RightPointerCaptureLost"/>
+                </Canvas>
+            </StackPanel>
+        </DataTemplate>
+        <StackLayout x:Name="VerticalStackLayout" Orientation="Vertical" Spacing="0"/>
+        <StackLayout x:Name="HorizontalStackLayout" Orientation="Horizontal" Spacing="1"/>
+    </UserControl.Resources>
+
+    <Grid
+    Width="21" 
+    Height="21"
+    PointerEntered="OnPointerEntered"
+    PointerPressed="OnPointerPressed"
+    PointerReleased="OnPointerReleased"
+    PointerExited="OnPointerExited"
+    PointerCanceled="OnPointerCanceled"
+    PointerCaptureLost="OnPointerCaptureLost"
+    PointerMoved="OnPointerMoved">
+
+        <Grid.Background>
+            <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel:CSOReinforceViewModel.CSOReinforceground, Mode=OneWay}"></ImageBrush>
+        </Grid.Background>
+
+        <!--信息浮窗-->
+        <Popup IsOpen="{x:Bind ViewModel.CSOReinforceFlyoutIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind CSOReinforceVerticalOffset, Mode=OneWay}" VerticalOffset="{x:Bind CSOReinforceVerticalOffset, Mode=OneWay}" IsHitTestVisible="{x:Bind ViewModel.IsEditorMode, Mode=OneWay}">
+            <Grid Width="230" Height="310" IsHitTestVisible="{x:Bind ViewModel.IsEditorMode, Mode=OneWay}">
+                <Grid.Background>
+                    <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel:CSOReinforceViewModel.CSOReinforceFlyoutBorder, Mode=OneWay}"></ImageBrush>
+                </Grid.Background>
+                <StackPanel Orientation="Vertical" Margin="12,12,12,17" >
+                    <TextBlock Text="{x:Bind ViewModel.MaxReinforceTip, Mode=OneWay}" Foreground="White" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" Margin="0,0,0,20" TextWrapping="WrapWholeWords"/>
+                    <ItemsRepeater Layout="{StaticResource VerticalStackLayout}" ItemTemplate="{StaticResource CSOReinforceDataView}" ItemsSource="{x:Bind ViewModel.ReinforceDataView, Mode=OneWay}"/>
+                    <TextBlock Text="{x:Bind ViewModel.RestReinforceTip, Mode=OneWay}" Foreground="White" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" Margin="0,20,0,0" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="{x:Bind ViewModel.RemainReinforceTip, Mode=OneWay}" Foreground="#a8a8a8" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="{x:Bind ViewModel.ExReinforceTip, Mode=OneWay}" Foreground="#a8a8a8" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="{x:Bind ViewModel:CSOReinforceViewModel.ReinforceTip, Mode=OneWay}" Foreground="#a8a8a8" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" Margin="0,32,0,0" TextWrapping="WrapWholeWords"/>
+                </StackPanel>
+            </Grid>
+        </Popup>
+    </Grid>
+</UserControl>

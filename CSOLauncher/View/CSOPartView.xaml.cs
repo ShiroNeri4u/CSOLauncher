@@ -1,9 +1,11 @@
 using CSODataCore;
 using CSOLauncher.ViewModels;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
+using static CSOLauncher.CSOButtonBase;
 
 namespace CSOLauncher.View
 {
@@ -47,7 +49,6 @@ namespace CSOLauncher.View
 
         private void OnPointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            e.Handled = true;
             if (!ViewModel.CSOPartEditorIsOpen)
             {
                 ViewModel.CSOPartFlyoutIsOpen = true;
@@ -56,13 +57,22 @@ namespace CSOLauncher.View
 
         private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            ViewModel.CSOPartFlyoutIsOpen = false;
+            e.Handled = true;
+            var pointerPoint = e.GetCurrentPoint(this);
+            if (pointerPoint.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+            {
+                ViewModel.CSOPartFlyoutIsOpen = false;
+            }
         }
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            ViewModel.CSOPartFlyoutIsOpen = false;
-            ViewModel.CSOPartEditorIsOpen = true;
+            var pointerPoint = e.GetCurrentPoint(this);
+            if (pointerPoint.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            {
+                ViewModel.CSOPartFlyoutIsOpen = false;
+                ViewModel.CSOPartEditorIsOpen = true;
+            }
         }
 
         private void OnPointerExited(object sender, PointerRoutedEventArgs e)
@@ -103,6 +113,7 @@ namespace CSOLauncher.View
 
         private void SelectPartItem(object sender, TappedRoutedEventArgs e)
         {
+            
             var grid = (Grid)sender;
             if (grid != null)
             {

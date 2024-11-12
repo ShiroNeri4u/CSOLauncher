@@ -32,46 +32,38 @@ namespace CSOLauncher
         public static readonly Dictionary<string, BitmapImage> ImageResources = [];
         private static readonly List<Task> LoadAssetsTask = [];
         private static readonly string[] Folders = ["Common", "zh-cn"];
+        private static string CSOFolder = $@"{Package.Current.InstalledLocation.Path}\Assets\CSO\";
         public static string ResourceDirectory = @"D:\CSNZ\Item";
         private static async Task LoadAssets()
         {
-            StorageFolder InstalledLocation = Package.Current.InstalledLocation;
-            StorageFolder AssetsFolder = await InstalledLocation.GetFolderAsync("Assets");
-            StorageFolder CSOFolder = await AssetsFolder.GetFolderAsync("CSO");
-            foreach( string folder in Folders)
+            foreach ( string folder in Folders)
             {
-                StorageFolder Folder = await CSOFolder.GetFolderAsync(folder);
-                LoadAssetsTask.Add(FindTgaUri(Folder, InstalledLocation.Path));
+                string currentfolder = CSOFolder + folder;
+                LoadAssetsTask.Add(FindTgaUri(currentfolder));
             }
             await Task.WhenAll(LoadAssetsTask);
         }
 
-        private async static Task FindTgaUri(StorageFolder folder, string basePath)
+        private async static Task FindTgaUri(string folder)
         {
             List<Task> tasks = [];
-            string[] files = Directory.GetFiles(folder.Path);
-            foreach (string file in files)
+            DirectoryInfo directoryInfo = new DirectoryInfo(folder);
+            FileInfo[] tgaFiles = directoryInfo.GetFiles("*.tga", SearchOption.AllDirectories);
+
+            foreach (FileInfo file in tgaFiles)
             {
-                string relativePath = file.Replace(basePath, "").TrimStart(System.IO.Path.DirectorySeparatorChar);
-                Uri fileUri = new($"ms-appx:///{relativePath}");
-                Task task = LoadTgaImageAsync(fileUri);
-                tasks.Add(task);
-            }
-            IReadOnlyList<StorageFolder> folders = await folder.GetFoldersAsync();
-            foreach (StorageFolder nextfolder in folders)
-            {
-                tasks.Add(FindTgaUri(nextfolder, basePath));
+                string path = file.FullName;
+                tasks.Add(LoadTgaImageAsync(path));
             }
             await Task.WhenAll(tasks);
         }
 
-        private async static Task LoadTgaImageAsync(Uri uri)
+        private static Task LoadTgaImageAsync(string path)
         {
-            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-            string resourcesname = System.IO.Path.GetFileNameWithoutExtension(uri.LocalPath);
-            using IRandomAccessStream stream = await file.OpenReadAsync();
+            string resourcesname = System.IO.Path.GetFileNameWithoutExtension(path);
+            using FileStream file = new(path, FileMode.Open, FileAccess.Read);
             using MemoryStream memstream = new();
-            using SixLabors.ImageSharp.Image<Bgra32> image = SixLabors.ImageSharp.Image.Load<Bgra32>(Options, stream.AsStreamForRead());
+            using SixLabors.ImageSharp.Image<Bgra32> image = SixLabors.ImageSharp.Image.Load<Bgra32>(Options, file);
             {
                 WriteableBitmap bitmap = new(image.Width, image.Height);
                 image.SaveAsPng(memstream);
@@ -79,6 +71,7 @@ namespace CSOLauncher
                 bitmap.SetSource(memstream.AsRandomAccessStream());
                 Assets.Add(resourcesname, bitmap);
             }
+            return Task.CompletedTask;
         }
 
         protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)

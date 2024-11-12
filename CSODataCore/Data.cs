@@ -5,31 +5,33 @@
         /// <summary>
         /// 伤害
         /// </summary>
-        public byte? Damage { get; set; }
+        public byte Damage { get; set; }
         /// <summary>
-        /// 精确度
+        /// 命中率
         /// </summary>
-        public byte? Accuracy { get; set; }
+        public byte Accuracy { get; set; }
         /// <summary>
         /// 后坐力
         /// </summary>
-        public byte? KickBack { get; set; }
+        public byte Rebound { get; set; }
         /// <summary>
         /// 重量
         /// </summary>
-        public byte? Wegiht { get; set; }
+        public byte Weight { get; set; }
         /// <summary>
-        /// 射速
+        /// 连射性
         /// </summary>
-        public byte? FireRate { get; set; }
+        public byte Repeatedly { get; set; }
         /// <summary>
         /// 填弹数
         /// </summary>
-        public byte? Ammo { get; set; }
+        public byte Ammo { get; set; }
         /// <summary>
-        /// +9终极提升类型
+        /// 追加
         /// </summary>
-        public byte? OverDmg { get; set; }
+        public byte OverDmg { get; set; }
+
+        public required Reinforce Reinforce { get; set; }
     }
     public sealed class ItemData(Item item, int slot)
     {

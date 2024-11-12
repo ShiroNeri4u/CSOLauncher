@@ -1,5 +1,6 @@
 using CSODataCore;
 using CSOLauncher.ViewModels;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -66,13 +67,21 @@ namespace CSOLauncher.View
 
         private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            ViewModel.CSOPaintFlyoutIsOpen = false;
+            var pointerPoint = e.GetCurrentPoint(this);
+            if (pointerPoint.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+            {
+                ViewModel.CSOPaintFlyoutIsOpen = false;
+            }
         }
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            ViewModel.CSOPaintFlyoutIsOpen = false;
-            ViewModel.CSOPaintEditorIsOpen = true;
+            var pointerPoint = e.GetCurrentPoint(this);
+            if (pointerPoint.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            {
+                ViewModel.CSOPaintFlyoutIsOpen = false;
+                ViewModel.CSOPaintEditorIsOpen = true;
+            }
         }
 
         private void OnPointerExited(object sender, PointerRoutedEventArgs e)

@@ -76,7 +76,7 @@
         
         <!--编辑器-->
         <Popup IsOpen="{x:Bind ViewModel.CSOPartEditorIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind CSOPartHorizontalOffset, Mode=OneWay}" VerticalOffset="{x:Bind CSOPartVerticalOffset, Mode=OneWay}" AllowFocusOnInteraction="True" AllowFocusWhenDisabled="False">
-        <Grid Width="164" Height="300">
+        <Grid Width="164" Height="230">
             <Grid.Background>
                 <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel:CSOPartViewModel.CSOPartEditorBorder, Mode=OneTime}"></ImageBrush>
             </Grid.Background>

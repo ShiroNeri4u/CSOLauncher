@@ -15,7 +15,7 @@
 	<Nullable>Enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="View\CSOPaintView.xaml" />
+    <None Remove="View\CSOReinforceView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +50,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSODataCore\CSODataCore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="View\CSOReinforceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\CSOPaintView.xaml">
