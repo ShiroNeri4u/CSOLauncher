@@ -31,18 +31,25 @@
         /// </summary>
         public byte OverDmg { get; set; }
 
-        public required Reinforce Reinforce { get; set; }
     }
-    public sealed class ItemData(Item item, int slot)
+    public sealed class ItemData
     {
-        public Item Item { get; set; } = item;
-        public int Slot { get; set; } = slot;
-
+        public Item Item { get; set; }
+        public int Slot { get; set; }
         public int GetData { get; set; }
         public int DQData { get; set; }
         public ReinforceData? ReinforceData { get; set; }
-        public Item? Paint { get; set; }
-        public Item? Part1 { get; set; }
-        public Item? Part2 { get; set; }
+        public Item Paint { get; set; }
+        public Item Part1 { get; set; }
+        public Item Part2 { get; set; }
+
+        public ItemData(Item item, int slot, Item paint, Item part1, Item part2)
+        {
+            Item = item;
+            Slot = slot;
+            Paint = paint;
+            Part1 = part1;
+            Part2 = part2;
+        }
     }
 }

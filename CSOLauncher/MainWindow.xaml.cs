@@ -13,12 +13,6 @@ namespace CSOLauncher
         public MainWindow()
         {
             this.InitializeComponent();
-            Border.Source = Launcher.Assets["itembox_gold"];
-            Weapon.Source = Launcher.Assets["unknown_item"];
-            Team.Source = Launcher.Assets["teamtype0"];
-            Part.Source = Launcher.Assets["partsweapon_icon"];
-            Item[] items = ItemManager.Search(1);
-            Name.Text = items[0].TransName;
         }
 
         private async void SelectFileButton_Click(object sender, RoutedEventArgs e)

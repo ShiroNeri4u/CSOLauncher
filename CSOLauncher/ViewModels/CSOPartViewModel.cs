@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
+using static CSOLauncher.Launcher;
 
 namespace CSOLauncher.ViewModels
 {
@@ -35,21 +36,23 @@ namespace CSOLauncher.ViewModels
         /// <summary>
         /// 配件属性
         /// </summary>
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CSOPartItemGroup))]
-        private Item? _CSOItem;
-        public List<CSOPartData> CSOPartItemGroup => GetPartType();
+        public enum CSOPartSlot : byte
+        {
+            Part1 = 0,
+            Part2 = 1,
+        }
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CSOPartBackground))]
-        [NotifyPropertyChangedFor(nameof(CSOPartNameVisibility))]
-        [NotifyPropertyChangedFor(nameof(CSOPartName))]
-        [NotifyPropertyChangedFor(nameof(CSOPartDescription))]
-        [NotifyPropertyChangedFor(nameof(CSOPartFlyoutHeight))]
-        [NotifyPropertyChangedFor(nameof(CSOPartFlyoutBorder))]
-        private Item? _CSOPartItem;
-        public WriteableBitmap CSOPartBackground => (CSOPartItem ?? ItemManager.EmptyItem).IsEmpty ? Launcher.Assets[EmptySlot] : Launcher.Assets[(CSOPartItem ?? ItemManager.EmptyItem).ResourceName.ToLower() + PartBackgroundPostName];
-        public Visibility CSOPartNameVisibility => (CSOPartItem ?? ItemManager.EmptyItem).IsEmpty ? Visibility.Collapsed : Visibility.Visible;
+        [NotifyPropertyChangedFor(nameof(CSOPartItemGroup))]
+        private ItemData _CSOItemData;
+
+        [ObservableProperty]
+        private CSOPartSlot _Slot;
+
+        public List<CSOPartData> CSOPartItemGroup => GetPartType();
+
+        public WriteableBitmap CSOPartBackground => GetBackground();
+        public Visibility CSOPartNameVisibility => GetNameVisibility();
         public string CSOPartName => GetName();
         public string CSOPartDescription => GetDescription();
 
@@ -61,6 +64,74 @@ namespace CSOLauncher.ViewModels
         public int CSOPartFlyoutHeight => GetFlyoutHeight();
         public WriteableBitmap CSOPartFlyoutBorder => Launcher.Assets[CSOFlyout.GetAssets(CSOPartFlyoutWidth, CSOPartFlyoutHeight, Color)];
 
+        /// <summary>
+        /// 编辑器属性
+        /// </summary>
+
+        [ObservableProperty]
+        private bool _CSOPartEditorIsOpen;
+
+        public CSOPartViewModel(ItemData data, ViewModelPropertyChanged changed, CSOPartSlot slot)
+        {
+            CSOItemData = data;
+            Changed = changed;
+            Slot = slot;
+            Changed += OnChanged;
+            CSOPartFlyoutIsOpen = false;
+            CSOPartEditorIsOpen = false;
+        }
+
+        [ObservableProperty]
+        private ViewModelPropertyChanged _Changed;
+
+        private void OnChanged()
+        {
+            OnPropertyChanged(nameof(CSOPartBackground));
+            OnPropertyChanged(nameof(CSOPartNameVisibility));
+            OnPropertyChanged(nameof(CSOPartName));
+            OnPropertyChanged(nameof(CSOPartDescription));
+            OnPropertyChanged(nameof(CSOPartFlyoutHeight));
+            OnPropertyChanged(nameof(CSOPartFlyoutBorder));
+        }
+
+        private WriteableBitmap GetBackground()
+        {
+            if (Slot == CSOPartSlot.Part1)
+            {
+                if (CSOItemData.Part1.IsEmpty)
+                {
+                    return Launcher.Assets[EmptySlot];
+                }
+                else
+                {
+                    return Launcher.Assets[CSOItemData.Part1.ResourceName.ToLower() + PartBackgroundPostName];
+                }
+            }
+            else
+            {
+                if (CSOItemData.Part2.IsEmpty)
+                {
+                    return Launcher.Assets[EmptySlot];
+                }
+                else
+                {
+                    return Launcher.Assets[CSOItemData.Part2.ResourceName.ToLower() + PartBackgroundPostName];
+                }
+            }
+        }
+
+        private Visibility GetNameVisibility()
+        {
+            if (Slot == CSOPartSlot.Part1)
+            {
+                return CSOItemData.Part1.IsEmpty ? Visibility.Collapsed : Visibility.Visible;
+            }
+            else
+            {
+                return CSOItemData.Part2.IsEmpty? Visibility.Collapsed: Visibility.Visible;
+            }
+        }
+
         private static List<CSOPartData> GetData(ItemPart partType)
         {
             List<CSOPartData> data = [];
@@ -71,25 +142,17 @@ namespace CSOLauncher.ViewModels
             return data;
         }
 
-        /// <summary>
-        /// 编辑器属性
-        /// </summary>
-
-        [ObservableProperty]
-        private bool _CSOPartEditorIsOpen;
-
         private List<CSOPartData> GetPartType()
         {
             ItemPart part;
-            if (CSOItem != null)
+            if (CSOItemData.Item.Infomation != null)
             {
-                if (CSOItem.Infomation != null)
-                {
-                    part = CSOItem.Infomation.Part;
-                }
-                else part = ItemPart.Disable;
+                part = CSOItemData.Item.Infomation.Part;
             }
-            else part = ItemPart.Disable;
+            else
+            {
+                part = ItemPart.Disable;
+            }
             if (CSOPartgroupDictionary.TryGetValue(part, out var list))
             {
                 return list ?? [];
@@ -102,47 +165,73 @@ namespace CSOLauncher.ViewModels
 
         private string GetName()
         {
-            if (CSOPartItem != null)
+            if (Slot == CSOPartSlot.Part1)
             {
-                if (!CSOPartItem.IsEmpty)
+                if (CSOItemData.Part1.IsEmpty)
                 {
-                    return CSOPartItem.TransName ?? CSOPartItem.Name;
+                    return ItemManager.EmptyItem.TransName ?? ItemManager.EmptyItem.Name;
                 }
                 else
                 {
-                    return ItemManager.EmptyItem.TransName ?? ItemManager.EmptyItem.Name;
+                    return CSOItemData.Part1.TransName ?? CSOItemData.Part1.Name;
                 }
             }
             else
             {
-                return ItemManager.EmptyItem.TransName ?? ItemManager.EmptyItem.Name;
+                if (CSOItemData.Part2.IsEmpty)
+                {
+                    return ItemManager.EmptyItem.TransName ?? ItemManager.EmptyItem.Name;
+                }
+                else
+                {
+                    return CSOItemData.Part1.TransName ?? CSOItemData.Part1.Name;
+                }
             }
         }
 
         private string GetDescription()
         {
-            if (CSOPartItem != null)
+            if (Slot == CSOPartSlot.Part1)
             {
-                if (CSOPartItem.IsEmpty)
+                if (CSOItemData.Part1.IsEmpty)
                 {
                     return ItemManager.LanguageDictionary[EmptyPartDescName];
                 }
                 else
                 {
                     StringBuilder desc = new();
-                    desc.Append(ItemManager.LanguageDictionary[PreDescName + CSOPartItem!.ResourceName]);
+                    desc.Append(ItemManager.LanguageDictionary[PreDescName + CSOItemData.Part1.ResourceName]);
                     desc.Replace(OldNewLine, NewLine);
                     return desc.ToString();
                 }
             }
             else
             {
-                return ItemManager.EmptyItem.TransName ?? ItemManager.EmptyItem.Name;
+                if (CSOItemData.Part2.IsEmpty)
+                {
+                    return ItemManager.LanguageDictionary[EmptyPartDescName];
+                }
+                else
+                {
+                    StringBuilder desc = new();
+                    desc.Append(ItemManager.LanguageDictionary[PreDescName + CSOItemData.Part2.ResourceName]);
+                    desc.Replace(OldNewLine, NewLine);
+                    return desc.ToString();
+                }
             }
         }
 
         private int GetFlyoutHeight()
         {
+            Item slot;
+            if(Slot == CSOPartSlot.Part1)
+            {
+                slot = CSOItemData.Part1;
+            }
+            else
+            {
+                slot = CSOItemData.Part2;
+            }
             TextBlock textBlock = new()
             {
                 Text = CSOPartDescription,
@@ -154,20 +243,14 @@ namespace CSOLauncher.ViewModels
             };
             textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
-            if (CSOPartItem != null)
+
+            if (slot.IsEmpty)
             {
-                if (CSOPartItem.IsEmpty)
-                {
-                    return (int)textBlock.DesiredSize.Height + 27;
-                }
-                else
-                {
-                    return (int)textBlock.DesiredSize.Height + 57;
-                }
+                return (int)textBlock.DesiredSize.Height + 27;
             }
             else
             {
-                return 0;
+                return (int)textBlock.DesiredSize.Height + 57;
             }
         }
     }

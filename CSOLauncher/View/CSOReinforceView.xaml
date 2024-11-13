@@ -56,7 +56,6 @@
     Width="21" 
     Height="21"
     PointerEntered="OnPointerEntered"
-    PointerPressed="OnPointerPressed"
     PointerReleased="OnPointerReleased"
     PointerExited="OnPointerExited"
     PointerCanceled="OnPointerCanceled"
@@ -68,8 +67,8 @@
         </Grid.Background>
 
         <!--信息浮窗-->
-        <Popup IsOpen="{x:Bind ViewModel.CSOReinforceFlyoutIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind CSOReinforceVerticalOffset, Mode=OneWay}" VerticalOffset="{x:Bind CSOReinforceVerticalOffset, Mode=OneWay}" IsHitTestVisible="{x:Bind ViewModel.IsEditorMode, Mode=OneWay}">
-            <Grid Width="230" Height="310" IsHitTestVisible="{x:Bind ViewModel.IsEditorMode, Mode=OneWay}">
+        <Popup IsOpen="{x:Bind ViewModel.CSOReinforceFlyoutIsOpen, Mode=OneWay}" HorizontalOffset="{x:Bind CSOReinforceVerticalOffset, Mode=OneWay}" VerticalOffset="{x:Bind CSOReinforceVerticalOffset, Mode=OneWay}">
+            <Grid Width="230" Height="310" IsHitTestVisible="{x:Bind ViewModel.CSOReinforceEditorMode, Mode=OneWay}" PointerReleased="FlyoutPointerReleased">
                 <Grid.Background>
                     <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel:CSOReinforceViewModel.CSOReinforceFlyoutBorder, Mode=OneWay}"></ImageBrush>
                 </Grid.Background>
@@ -77,9 +76,9 @@
                     <TextBlock Text="{x:Bind ViewModel.MaxReinforceTip, Mode=OneWay}" Foreground="White" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" Margin="0,0,0,20" TextWrapping="WrapWholeWords"/>
                     <ItemsRepeater Layout="{StaticResource VerticalStackLayout}" ItemTemplate="{StaticResource CSOReinforceDataView}" ItemsSource="{x:Bind ViewModel.ReinforceDataView, Mode=OneWay}"/>
                     <TextBlock Text="{x:Bind ViewModel.RestReinforceTip, Mode=OneWay}" Foreground="White" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" Margin="0,20,0,0" TextWrapping="WrapWholeWords"/>
-                    <TextBlock Text="{x:Bind ViewModel.RemainReinforceTip, Mode=OneWay}" Foreground="#a8a8a8" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" TextWrapping="WrapWholeWords"/>
-                    <TextBlock Text="{x:Bind ViewModel.ExReinforceTip, Mode=OneWay}" Foreground="#a8a8a8" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" TextWrapping="WrapWholeWords"/>
-                    <TextBlock Text="{x:Bind ViewModel:CSOReinforceViewModel.ReinforceTip, Mode=OneWay}" Foreground="#a8a8a8" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" Margin="0,32,0,0" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="{x:Bind ViewModel.RemainReinforceTip, Mode=OneWay}" Foreground="#C0C0C0" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="{x:Bind ViewModel.ExReinforceTip, Mode=OneWay}" Foreground="#C0C0C0" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" TextWrapping="WrapWholeWords"/>
+                    <TextBlock Text="{x:Bind ViewModel:CSOReinforceViewModel.ReinforceTip, Mode=OneWay}" Foreground="#C0C0C0" FontFamily="{StaticResource CSOFont}" CharacterSpacing="50" FontSize="13.0" Margin="0,32,0,0" TextWrapping="WrapWholeWords"/>
                 </StackPanel>
             </Grid>
         </Popup>

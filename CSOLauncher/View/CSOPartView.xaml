@@ -65,7 +65,7 @@
                     Margin="0,0,0,12"/>
                     <TextBlock
                     Text="{x:Bind ViewModel.CSOPartDescription, Mode=OneWay}" 
-                    Foreground="#a8a8a8" 
+                    Foreground="#C0C0C0" 
                     FontFamily="{StaticResource CSOFont}" 
                     CharacterSpacing="50" 
                     FontSize="12.0"

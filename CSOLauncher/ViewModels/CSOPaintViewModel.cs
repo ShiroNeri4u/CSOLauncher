@@ -7,13 +7,13 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using Windows.Foundation;
+using static CSOLauncher.Launcher;
 
 namespace CSOLauncher.ViewModels
 {
-    public partial class CSOPaintViewModels : ObservableObject
+    public partial class CSOPaintViewModel : ObservableObject
     {
         private const string PreDescName = "CSO_Item_Desc_";
         private const string Paint = "paint";
@@ -25,19 +25,17 @@ namespace CSOLauncher.ViewModels
         public static readonly WriteableBitmap CSOPainttEditorBorder = Launcher.Assets[CSOFlyout.GetAssets(150, 230, Color)];
         public static readonly WriteableBitmap CSOPaintBackground = Launcher.Assets[Paint];
         private static readonly FontFamily CSOFont = (FontFamily)Microsoft.UI.Xaml.Application.Current.Resources["CSOFont"];
+
         /// <summary>
         /// 涂装属性
         /// </summary>
         [ObservableProperty]
-        private Item? _CSOItem;
+        [NotifyPropertyChangedFor(nameof(CSOPaintItemGroup))]
+        private ItemData _CSOItemData;
         public List<CSOPaintData>? CSOPaintItemGroup => GetPaintData();
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CSOPaintName))]
-        [NotifyPropertyChangedFor(nameof(CSOPaintDescription))]
-        [NotifyPropertyChangedFor(nameof(CSOPaintFlyoutHeight))]
-        [NotifyPropertyChangedFor(nameof(CSOPaintFlyoutBorder))]
-        private Item? _CSOPaintItem;
+        public ViewModelPropertyChanged? Changed;
+
         public string CSOPaintName => GetName();
         public string CSOPaintDescription => GetDescription();
 
@@ -52,35 +50,38 @@ namespace CSOLauncher.ViewModels
         /// <summary>
         /// 编辑器属性
         /// </summary>
-
         [ObservableProperty]
         private bool _CSOPaintEditorIsOpen;
 
+        public CSOPaintViewModel(ItemData data, ViewModelPropertyChanged changed)
+        {
+            CSOItemData = data;
+            Changed = changed;
+            Changed += OnChanged;
+            CSOPaintFlyoutIsOpen = false;
+            CSOPaintEditorIsOpen = false;
+        }
+        
+        public void OnChanged()
+        {
+            OnPropertyChanged(nameof(CSOPaintName));
+            OnPropertyChanged(nameof(CSOPaintDescription));
+            OnPropertyChanged(nameof(CSOPaintDescription));
+            OnPropertyChanged(nameof(CSOPaintFlyoutHeight));
+            OnPropertyChanged(nameof(CSOPaintFlyoutBorder));
+        }
+
         private string GetName()
         {
-            if (CSOPaintItem != null)
-            {
-                    return CSOPaintItem.TransName ?? CSOPaintItem.Name;
-            }
-            else
-            {
-                return ItemManager.EmptyItem.TransName ?? ItemManager.EmptyItem.Name;
-            }
+            return CSOItemData.Paint.TransName ?? CSOItemData.Paint.Name;
         }
 
         private string GetDescription()
         {
-            if (CSOPaintItem != null)
-            {
-                StringBuilder desc = new();
-                desc.Append(ItemManager.LanguageDictionary[PreDescName + CSOPaintItem!.ResourceName]);
-                desc.Replace(OldNewLine, NewLine);
-                return desc.ToString();
-            }
-            else
-            {
-                return ItemManager.EmptyItem.TransName ?? ItemManager.EmptyItem.Name;
-            }
+            StringBuilder desc = new();
+            desc.Append(ItemManager.LanguageDictionary[PreDescName + CSOItemData.Paint!.ResourceName]);
+            desc.Replace(OldNewLine, NewLine);
+            return desc.ToString();
         }
 
         private int GetFlyoutHeight()
@@ -96,7 +97,7 @@ namespace CSOLauncher.ViewModels
             };
             textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
-            if (CSOPaintItem != null)
+            if (CSOItemData.Paint != null)
             {
                 return (int)textBlock.DesiredSize.Height + 57;
             }
@@ -108,29 +109,25 @@ namespace CSOLauncher.ViewModels
 
         private List<CSOPaintData> GetPaintData()
         {
-            if (CSOItem != null)
+            if (CSOItemData.Item.Infomation != null)
             {
-                if (CSOItem.Infomation != null)
+                if (CSOItemData.Item.Infomation.Paints != null)
                 {
-                    if (CSOItem.Infomation.Paints != null)
+                    if (!CSOPaintGroupDictionary.TryGetValue(CSOItemData.Item, out List<CSOPaintData>? list))
                     {
-                        if (!CSOPaintGroupDictionary.TryGetValue(CSOItem, out List<CSOPaintData>? list))
+                        List<CSOPaintData> newList = [];
+                        foreach (Item paint in CSOItemData.Item.Infomation.Paints)
                         {
-                            List<CSOPaintData> newList = [];
-                            foreach (Item paint in CSOItem.Infomation.Paints)
-                            {
-                                CSOPaintData data = new(paint, CSOItem);
-                                newList.Add(data);
-                            }
-                            CSOPaintGroupDictionary[CSOItem] = newList;
-                            return CSOPaintGroupDictionary[CSOItem];
+                            CSOPaintData data = new(CSOItemData.Item, paint);
+                            newList.Add(data);
                         }
-                        else
-                        {
-                            return list;
-                        }
+                        CSOPaintGroupDictionary[CSOItemData.Item] = newList;
+                        return CSOPaintGroupDictionary[CSOItemData.Item];
                     }
-                    else return [];
+                    else
+                    {
+                        return list;
+                    }
                 }
                 else return [];
             }
@@ -159,25 +156,25 @@ namespace CSOLauncher.ViewModels
         public WriteableBitmap CSOItemBoxBorder;
         public WriteableBitmap CSOItemBoxBottom;
 
-        public CSOPaintData(Item item, Item weapon)
+        public CSOPaintData(Item item, Item paintitem)
         {
-            CSOPaintItem = item;
-            CSOPaintName = item.TransName ?? item.Name;
+            CSOPaintItem = paintitem;
+            CSOPaintName = paintitem.TransName ?? paintitem.Name;
             StringBuilder sb = new();
             sb.Append(PreName);
             sb.Append(UnderLine);
-            sb.Append(ColorString[(int)(item.ItemGrade != null ? item.ItemGrade : ItemGrade.None)]);
+            sb.Append(ColorString[(int)(paintitem.ItemGrade != null ? paintitem.ItemGrade : ItemGrade.None)]);
             sb.Append(UnderLine);
             sb.Append(CSOItemBoxBorderName);
             CSOItemBoxBorder = Launcher.Assets[sb.ToString()];
             sb.Replace(CSOItemBoxBorderName, CSOItemBoxBottomName);
             CSOItemBoxBottom = Launcher.Assets[sb.ToString()];
 
-            if (item.ResourceName != WeaponPaintRemove)
+            if (paintitem.ResourceName != WeaponPaintRemove)
             {
                 sb.Clear();
-                sb.Append(weapon.ResourceName.ToLower());
                 sb.Append(item.ResourceName.ToLower());
+                sb.Append(paintitem.ResourceName.ToLower());
                 sb.Replace(WeaponPaint, Paint);
                 string uriName = sb.ToString();
                 if (Launcher.ImageResources.TryGetValue(uriName, out var bitmap))
@@ -194,13 +191,13 @@ namespace CSOLauncher.ViewModels
                     sb.Append(uriName);
                     sb.Append(Extend);
                     BitmapImage newbitmap = new(new Uri(sb.ToString()));
-                    Launcher.ImageResources.Add(item.ResourceName, newbitmap);
+                    Launcher.ImageResources.Add(paintitem.ResourceName, newbitmap);
                     CSOPaintUri = newbitmap;
                 }
             }
             else
             {
-                if (Launcher.ImageResources.TryGetValue(weapon.ResourceName.ToLower(), out var bitmap))
+                if (Launcher.ImageResources.TryGetValue(item.ResourceName.ToLower(), out var bitmap))
                 {
                     CSOPaintUri = bitmap;
                 }
@@ -211,10 +208,10 @@ namespace CSOLauncher.ViewModels
                     sb.Append(BackSlash);
                     sb.Append(ItemDirectory);
                     sb.Append(BackSlash);
-                    sb.Append(weapon.ResourceName.ToLower());
+                    sb.Append(item.ResourceName.ToLower());
                     sb.Append(Extend);
                     BitmapImage newbitmap = new(new Uri(sb.ToString()));
-                    Launcher.ImageResources.Add(item.ResourceName, newbitmap);
+                    Launcher.ImageResources.Add(paintitem.ResourceName, newbitmap);
                     CSOPaintUri = newbitmap;
                 }
             }

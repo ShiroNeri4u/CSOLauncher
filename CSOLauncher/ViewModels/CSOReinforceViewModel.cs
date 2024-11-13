@@ -1,33 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CSODataCore;
-using CSOLauncher.ViewModels;
-using Microsoft.UI.Xaml.Controls;
+using CSOLauncher.DrawMethod;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection.Emit;
 using System.Text;
-using System.Threading.Tasks;
+using static CSOLauncher.Launcher;
 using static CSOLauncher.ViewModels.ReinforceDataView;
-using Microsoft.UI.Xaml.Media;
-using Windows.Foundation;
-using CSOLauncher.DrawMethod;
-using Windows.Security.Authentication.Web.Provider;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using Windows.UI.Notifications;
-using Windows.ApplicationModel.Store;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using static CSOLauncher.CSOButtonBase;
-using Microsoft.UI.Input;
-using System.Diagnostics;
-using CommunityToolkit.Mvvm.Messaging.Messages;
-using CommunityToolkit.Mvvm.Messaging;
-using static CSOLauncher.ViewModels.CSOReinforceViewModel;
 
 namespace CSOLauncher.ViewModels
 {
@@ -36,76 +18,90 @@ namespace CSOLauncher.ViewModels
         private const string OverDmgName = "CSO_PlayRoom_WeaponPropDlg_MasterEnhance";
         private const string CSO = "CSO_";
         private const string Label = "_Label";
-        private const string Reinforce = "enchant";
+        private const string ReinforceName = "enchant";
         private const string TipMax = "CSO_ToolTip_WpnEnhancebleMaxLv";
         private const string TipRest = "CSO_ToolTip_RestWpnEnhMaster";
         private const string TipRemain = "CSO_PlayRoom_WeaponPropDlg_EnhanceRemain";
         private const string TipEx = "CSO_ToolTip_WpnEnhPropEx";
         private const string Tip = "CSO_ToolTip_WpnEnhPropEx_Desc";
-        public static string ReinforceTip => GetTip();
+        private const string Unlimited = "CSO_Match_Roomlist_NoLimit";
         private const string ReplaceName = "%d";
         private const string OldNewLine = "\\n";
         private const string NewLine = "\n";
-        public static readonly WriteableBitmap CSOReinforceground = Launcher.Assets[Reinforce];
-        private static readonly FontFamily CSOFont = (FontFamily)Microsoft.UI.Xaml.Application.Current.Resources["CSOFont"];
+        public static readonly WriteableBitmap CSOReinforceground = Launcher.Assets[ReinforceName];
+        public static string ReinforceTip => GetTip();
         private const CSOFlyout.Color Color = CSOFlyout.Color.Grey;
-        public static WriteableBitmap CSOReinforceFlyoutBorder = Launcher.Assets[CSOFlyout.GetAssets(230, 310, Color)];
+        private static readonly WriteableBitmap _CSOReinforceFlyoutBorder = Launcher.Assets[CSOFlyout.GetAssets(230, 310, Color)];
+        public static readonly WriteableBitmap CSOReinforceFlyoutBorder = _CSOReinforceFlyoutBorder;
+        private static readonly ReinforceType[] Types = [ReinforceType.Damage, ReinforceType.Accuracy, ReinforceType.Rebound, ReinforceType.Weight, ReinforceType.Repeatedly, ReinforceType.Ammo, ReinforceType.OverDmg];
 
+        /// <summary>
+        /// 数据
+        /// </summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(RestReinforceTip))]
-        [NotifyPropertyChangedFor(nameof(RemainReinforceTip))]
-        private ReinforceData? _ReinforceData;
+        private ItemData _CSOItemData;
+
+        public List<ReinforceDataView> ReinforceDataView = [];
         public string MaxReinforceTip => GetTipMax();
         public string RestReinforceTip => GetTipRest();
         public string RemainReinforceTip => GetTipRemain();
         public string ExReinforceTip => GetTipEx();
 
-        public List<ReinforceDataView> ReinforceDataView = [];
         [ObservableProperty]
         private bool _CSOReinforceFlyoutIsOpen;
         [ObservableProperty]
-        private bool _IsEditorMode;
+        private bool _CSOReinforceEditorMode;
 
-
-        public CSOReinforceViewModel(ReinforceData data)
+        public CSOReinforceViewModel(ItemData data , ViewModelPropertyChanged changed)
         {
-            ReinforceData = data;
-            Changed = new OnChangedChild(ChangeText);
-            CreateDataView(data);
+            CSOItemData = data;
+            CSOReinforceFlyoutIsOpen = false;
+            CSOReinforceEditorMode = false;
+            Changed = changed;
+            Changed += OnChanged;
+            if (data.ReinforceData != null)
+            {
+                CreateDataView(data.ReinforceData);
+            }
         }
 
-        private string GetTipMax ()
+        private void OnChanged()
         {
-            if (ReinforceData != null)
+            OnPropertyChanged(nameof(MaxReinforceTip));
+            OnPropertyChanged(nameof(RestReinforceTip));
+            OnPropertyChanged(nameof(RemainReinforceTip));
+        }
+
+        private string GetTipMax()
+        {
+            if (CSOItemData.ReinforceData != null && CSOItemData.Item.Infomation != null && CSOItemData.Item.Infomation.Reinforce != null)
             {
                 StringBuilder sb = new();
                 sb.Append(ItemManager.LanguageDictionary[TipMax]);
-                sb.Replace(ReplaceName, ReinforceData.Reinforce.TotalMaxLv.ToString());
+                if(!Launcher.AllowReinforceIgnoreMaxLv)
+                {
+                    sb.Replace(ReplaceName, CSOItemData.Item.Infomation.Reinforce.TotalMaxLv.ToString());
+                }
+                else sb.Replace(ReplaceName, ItemManager.LanguageDictionary[Unlimited]);
                 return sb.ToString();
             }
             else return string.Empty;
         }
 
-        private void ChangeText()
-        {
-            OnPropertyChanged(nameof(RestReinforceTip));
-            OnPropertyChanged(nameof(RemainReinforceTip));
-        }
-
         private string GetTipRest()
         {
-            if (ReinforceData != null)
+            if (CSOItemData.ReinforceData != null)
             {
                 StringBuilder sb = new();
                 sb.Append(ItemManager.LanguageDictionary[TipRest]);
                 byte count;
-                if (ReinforceData.Reinforce.OverDmg == null || ReinforceData.Reinforce.OverDmg == 0)
+                if ((CSOItemData.Item.Infomation != null && CSOItemData.Item.Infomation.Reinforce != null) && (CSOItemData.Item.Infomation.Reinforce.OverDmg == null || CSOItemData.Item.Infomation.Reinforce.OverDmg == 0))
                 {
                     count = 0;
                 }
                 else
                 {
-                    if(ReinforceData.OverDmg == 0)
+                    if(CSOItemData.ReinforceData.OverDmg == 0)
                     {
                         count = 1;
                     }
@@ -125,15 +121,31 @@ namespace CSOLauncher.ViewModels
             StringBuilder sb = new();
             sb.Append(ItemManager.LanguageDictionary[TipRemain]);
             int count;
-            if(ReinforceData != null)
+            if(CSOItemData.ReinforceData != null && CSOItemData.Item.Infomation != null && CSOItemData.Item.Infomation.Reinforce != null)
             {
-                count = ReinforceData.Reinforce.TotalMaxLv - (ReinforceData.Damage + ReinforceData.Accuracy + ReinforceData.Rebound + ReinforceData.Weight + ReinforceData.Repeatedly + ReinforceData.Ammo + ReinforceData.OverDmg);
+                count = CSOItemData.Item.Infomation.Reinforce.TotalMaxLv - (CSOItemData.ReinforceData.Damage + CSOItemData.ReinforceData.Accuracy + CSOItemData.ReinforceData.Rebound + CSOItemData.ReinforceData.Weight + CSOItemData.ReinforceData.Repeatedly + CSOItemData.ReinforceData.Ammo + CSOItemData.ReinforceData.OverDmg);
             }
             else
             {
                 count = 0;
             }
-            sb.Replace(ReplaceName, count.ToString());
+            if (!Launcher.AllowReinforceIgnoreMaxLv)
+            {
+                sb.Replace(ReplaceName, count.ToString());
+            }
+            else
+            {
+                int colonIndex = sb.ToString().IndexOf(':');
+                if (colonIndex < 0)
+                {
+                    colonIndex = sb.ToString().IndexOf('：');
+                }
+                if (colonIndex != -1)
+                {
+                    sb.Remove(colonIndex + 1, sb.Length - (colonIndex + 1));
+                    sb.Append(ItemManager.LanguageDictionary[Unlimited]);
+                }
+            }
             return sb.ToString();
         }
 
@@ -142,11 +154,19 @@ namespace CSOLauncher.ViewModels
             StringBuilder sb = new();
             sb.Append(ItemManager.LanguageDictionary[TipEx]);
             int count;
-            if (ReinforceData != null)
+            if (CSOItemData.ReinforceData != null)
             {
-                if(ReinforceData.Reinforce.OverDmg != null)
+                if(CSOItemData.Item.Infomation != null && CSOItemData.Item.Infomation.Reinforce != null)
                 {
-                    count = (int)ReinforceData.Reinforce.OverDmg;
+                    byte? overdmg = CSOItemData.Item.Infomation.Reinforce.OverDmg;
+                    if (overdmg != null)
+                    {
+                        count = (int)overdmg;
+                    }
+                    else
+                    {
+                        count = 0;
+                    }
                 }
                 else
                 {
@@ -171,33 +191,24 @@ namespace CSOLauncher.ViewModels
 
         private void CreateDataView(ReinforceData data)
         {
-            string damage = GetTag(ReinforceType.Damage);
-            ReinforceDataView.Add(new(data, ReinforceType.Damage, damage));
-            string accuracy = GetTag(ReinforceType.Accuracy);
-            ReinforceDataView.Add(new(data, ReinforceType.Accuracy, accuracy));
-            string rebound = GetTag(ReinforceType.Rebound);
-            ReinforceDataView.Add(new(data, ReinforceType.Rebound, rebound));
-            string Weight = GetTag(ReinforceType.Weight);
-            ReinforceDataView.Add(new(data, ReinforceType.Weight, Weight));
-            string repeatedly = GetTag(ReinforceType.Repeatedly);
-            ReinforceDataView.Add(new(data, ReinforceType.Repeatedly, repeatedly));
-            string ammo = GetTag(ReinforceType.Ammo);
-            ReinforceDataView.Add(new(data, ReinforceType.Ammo, ammo));
-            string overdmg = GetTag(ReinforceType.OverDmg);
-            ReinforceDataView.Add(new(data, ReinforceType.OverDmg, overdmg));
-            for(int i = 0; i < ReinforceDataView.Count; i++)
+            if (data != null)
             {
-                Changed += ReinforceDataView[i].OnChangedOther;
-            }
-            for (int i = 0; i < ReinforceDataView.Count; i++)
-            {
-                ReinforceDataView[i].Changed = Changed;
+                foreach (ReinforceType type in Types)
+                {
+                    ReinforceDataView.Add(new(CSOItemData, type, GetTag(type)));
+                }
+                for (int i = 0; i < ReinforceDataView.Count; i++)
+                {
+                    Changed += ReinforceDataView[i].OnChanged;
+                }
+                for (int i = 0; i < ReinforceDataView.Count; i++)
+                {
+                    ReinforceDataView[i].Changed = Changed;
+                }
             }
         }
 
-        public delegate void OnChangedChild();
-
-        public OnChangedChild Changed;
+        private ViewModelPropertyChanged Changed;
 
         private static string GetTag(ReinforceType dataType)
         {
@@ -253,27 +264,30 @@ namespace CSOLauncher.ViewModels
         private const char Slash = '/';
         private const string EmptyBoxName = "emptybox";
         private const string FillBoxName = "fillbox";
-        private static string[] ButtonLeftName = ["btn_small_left@c", "btn_small_left@n", "btn_small_left@o"];
-        private static string[] ButtonRightName = ["btn_small_right@c", "btn_small_right@n", "btn_small_right@o"];
-        private static WriteableBitmap EmptyBox = Launcher.Assets[EmptyBoxName];
-        private static WriteableBitmap FillBox = Launcher.Assets[FillBoxName];
-        public static WriteableBitmap[] ButtonLeft = [Launcher.Assets[ButtonLeftName[0]], Launcher.Assets[ButtonLeftName[1]], Launcher.Assets[ButtonLeftName[2]]];
-        public static WriteableBitmap[] ButtonRight = [Launcher.Assets[ButtonRightName[0]], Launcher.Assets[ButtonRightName[1]], Launcher.Assets[ButtonRightName[2]]];
+        private static readonly string[] ButtonLeftName = ["btn_small_left@c", "btn_small_left@n", "btn_small_left@o"];
+        private static readonly string[] ButtonRightName = ["btn_small_right@c", "btn_small_right@n", "btn_small_right@o"];
+        private static readonly WriteableBitmap EmptyBox = Launcher.Assets[EmptyBoxName];
+        private static readonly WriteableBitmap FillBox = Launcher.Assets[FillBoxName];
+        private static readonly WriteableBitmap[] _ButtonLeft = [Launcher.Assets[ButtonLeftName[0]], Launcher.Assets[ButtonLeftName[1]], Launcher.Assets[ButtonLeftName[2]]];
+        public static  readonly WriteableBitmap[] ButtonLeft = _ButtonLeft;
+        private static readonly WriteableBitmap[] _ButtonRight = [Launcher.Assets[ButtonRightName[0]], Launcher.Assets[ButtonRightName[1]], Launcher.Assets[ButtonRightName[2]]];
+        public static readonly WriteableBitmap[] ButtonRight = _ButtonRight;
+
         [ObservableProperty]
         public WriteableBitmap _CurrentButtonLeft;
         [ObservableProperty]
         public WriteableBitmap _CurrentButtonRight;
 
-        public OnChangedChild? Changed;
+        public ViewModelPropertyChanged? Changed;
 
-        public ReinforceData Data;
-        private ReinforceType CurrentType;
+        public ItemData CSOItemData;
+
+        private readonly ReinforceType CurrentType;
         public string TagName;
         public string VauleTag => GetTag();
         public byte MaximumValue;
         
-
-        private bool init = false;
+        private bool _Init = false;
         private byte _CurrentValue;
         public byte CurrentValue
         {
@@ -284,10 +298,10 @@ namespace CSOLauncher.ViewModels
                 ChangeData();
                 GetBox();
                 OnPropertyChanged();
-                if(!init)
+                if(!_Init)
                 {
-                    init = true;
-                    OnChangedOther();
+                    _Init = true;
+                    OnChanged();
                 }
                 else
                 {
@@ -305,9 +319,9 @@ namespace CSOLauncher.ViewModels
         private string GetTag()
         {
             StringBuilder sb = new();
-            sb.Append(CurrentValue.ToString());
+            sb.Append(CurrentValue);
             sb.Append(Slash);
-            sb.Append(MaximumValue.ToString());
+            sb.Append(MaximumValue);
             return sb.ToString();
         }
         private void GetBox()
@@ -324,33 +338,36 @@ namespace CSOLauncher.ViewModels
         }
         private void ChangeData()
         {
-            switch (CurrentType)
+            if (CSOItemData.Item.Infomation != null && CSOItemData.Item.Infomation.Reinforce != null && CSOItemData.ReinforceData != null)
             {
-                case ReinforceType.Damage:
-                    Data.Damage = CurrentValue;
-                    break;
-                case ReinforceType.Accuracy:
-                    Data.Accuracy = CurrentValue;
-                    break;
-                case ReinforceType.Rebound:
-                    Data.Rebound = CurrentValue;
-                    break;
-                case ReinforceType.Weight:
-                    Data.Weight = CurrentValue;
-                    break;
-                case ReinforceType.Repeatedly:
-                    Data.Repeatedly = CurrentValue;
-                    break;
-                case ReinforceType.Ammo:
-                    Data.Ammo = CurrentValue;
-                    break;
-                case ReinforceType.OverDmg:
-                    Data.OverDmg = CurrentValue;
-                    break;
+                switch (CurrentType)
+                {
+                    case ReinforceType.Damage:
+                        CSOItemData.ReinforceData.Damage = CurrentValue;
+                        break;
+                    case ReinforceType.Accuracy:
+                        CSOItemData.ReinforceData.Accuracy = CurrentValue;
+                        break;
+                    case ReinforceType.Rebound:
+                        CSOItemData.ReinforceData.Rebound = CurrentValue;
+                        break;
+                    case ReinforceType.Weight:
+                        CSOItemData.ReinforceData.Weight = CurrentValue;
+                        break;
+                    case ReinforceType.Repeatedly:
+                        CSOItemData.ReinforceData.Repeatedly = CurrentValue;
+                        break;
+                    case ReinforceType.Ammo:
+                        CSOItemData.ReinforceData.Ammo = CurrentValue;
+                        break;
+                    case ReinforceType.OverDmg:
+                        CSOItemData.ReinforceData.OverDmg = CurrentValue;
+                        break;
+                }
             }
         }
 
-        public void OnChangedOther()
+        public void OnChanged()
         {
             OnPropertyChanged(nameof(LeftVisibility));
             OnPropertyChanged(nameof(RightVisibility));
@@ -358,40 +375,29 @@ namespace CSOLauncher.ViewModels
 
         public Visibility GetLeftVisibility()
         {
-            if(Data.Reinforce.OverDmg == 0 || Data.Reinforce.OverDmg == null)
+            if (CSOItemData.Item.Infomation != null && CSOItemData.Item.Infomation.Reinforce != null && CSOItemData.ReinforceData != null)
             {
-                if (MaximumValue == 0)
+                if (CSOItemData.Item.Infomation.Reinforce.OverDmg == 0 || CSOItemData.Item.Infomation.Reinforce.OverDmg == null)
                 {
-                    return Visibility.Collapsed;
-                }
-                else
-                {
-                    if (CurrentValue == 0)
+                    if (MaximumValue == 0)
                     {
                         return Visibility.Collapsed;
                     }
                     else
                     {
-                        return Visibility.Visible;
-                    }
-                }
-            }
-            else
-            {
-                if(CurrentType == ReinforceType.OverDmg)
-                {
-                    if(CurrentValue == 0)
-                    {
-                        return Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        return Visibility.Visible;
+                        if (CurrentValue == 0)
+                        {
+                            return Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            return Visibility.Visible;
+                        }
                     }
                 }
                 else
                 {
-                    if(Data.OverDmg == 0)
+                    if (CurrentType == ReinforceType.OverDmg)
                     {
                         if (CurrentValue == 0)
                         {
@@ -404,107 +410,133 @@ namespace CSOLauncher.ViewModels
                     }
                     else
                     {
-                        return Visibility.Collapsed;
+                        if (CSOItemData.ReinforceData.OverDmg == 0)
+                        {
+                            if (CurrentValue == 0)
+                            {
+                                return Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                return Visibility.Visible;
+                            }
+                        }
+                        else
+                        {
+                            return Visibility.Collapsed;
+                        }
                     }
                 }
             }
+            else return Visibility.Collapsed;
         }
 
         public Visibility GetRightVisibility()
         {
-            if (Data.Reinforce.OverDmg == 0 || Data.Reinforce.OverDmg == null)
+            if (CSOItemData.Item.Infomation != null && CSOItemData.Item.Infomation.Reinforce != null && CSOItemData.ReinforceData != null)
             {
-                if (MaximumValue == 0)
+                if (CSOItemData.Item.Infomation.Reinforce.OverDmg == 0 || CSOItemData.Item.Infomation.Reinforce.OverDmg == null)
                 {
-                    return Visibility.Collapsed;
-                }
-                else
-                {
-                    if ((Data.Damage + Data.Accuracy + Data.Rebound + Data.Weight + Data.Repeatedly + Data.Ammo + Data.OverDmg) >= Data.Reinforce.TotalMaxLv)
+                    if (MaximumValue == 0)
                     {
                         return Visibility.Collapsed;
                     }
                     else
                     {
-                        return Visibility.Visible;
+                        if ((CSOItemData.ReinforceData.Damage + CSOItemData.ReinforceData.Accuracy + CSOItemData.ReinforceData.Rebound + CSOItemData.ReinforceData.Weight + CSOItemData.ReinforceData.Repeatedly + CSOItemData.ReinforceData.Ammo + CSOItemData.ReinforceData.OverDmg) >= CSOItemData.Item.Infomation.Reinforce.TotalMaxLv && !Launcher.AllowReinforceIgnoreMaxLv)
+                        {
+                            return Visibility.Collapsed;
+                        }
+                        else if (CurrentValue < MaximumValue)
+                        {
+                            return Visibility.Visible;
+                        }
+                        else
+                        {
+                            return Visibility.Collapsed;
+                        }
                     }
                 }
-            }
-            else
-            {
-                if (CurrentType == ReinforceType.OverDmg)
+                else
                 {
-                    if ((Data.Damage + Data.Accuracy + Data.Rebound + Data.Weight + Data.Repeatedly + Data.Ammo) + 1 == Data.Reinforce.TotalMaxLv)
+                    if (CurrentType == ReinforceType.OverDmg)
                     {
-                        if(Data.OverDmg == 1)
+                        if ((CSOItemData.ReinforceData.Damage + CSOItemData.ReinforceData.Accuracy + CSOItemData.ReinforceData.Rebound + CSOItemData.ReinforceData.Weight + CSOItemData.ReinforceData.Repeatedly + CSOItemData.ReinforceData.Ammo) + 1 == CSOItemData.Item.Infomation.Reinforce.TotalMaxLv)
+                        {
+                            if (CSOItemData.ReinforceData.OverDmg == 1)
+                            {
+                                return Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                return Visibility.Visible;
+                            }
+                        }
+                        else
+                        {
+                            return Visibility.Collapsed;
+                        }
+                    }
+                    else
+                    {
+                        if (CurrentValue >= MaximumValue)
                         {
                             return Visibility.Collapsed;
                         }
                         else
                         {
-                            return Visibility.Visible;
-                        }
-                    }
-                    else
-                    {
-                        return Visibility.Collapsed;
-                    }
-                }
-                else
-                {
-                    if (CurrentValue >= MaximumValue)
-                    {
-                        return Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        if ((Data.Damage + Data.Accuracy + Data.Rebound + Data.Weight + Data.Repeatedly + Data.Ammo) + 1 >= Data.Reinforce.TotalMaxLv)
-                        {
-                            return Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            return Visibility.Visible;
+                            if ((CSOItemData.ReinforceData.Damage + CSOItemData.ReinforceData.Accuracy + CSOItemData.ReinforceData.Rebound + CSOItemData.ReinforceData.Weight + CSOItemData.ReinforceData.Repeatedly + CSOItemData.ReinforceData.Ammo) + 1 >= CSOItemData.Item.Infomation.Reinforce.TotalMaxLv && !Launcher.AllowReinforceIgnoreMaxLv)
+                            {
+                                return Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                return Visibility.Visible;
+                            }
                         }
                     }
                 }
             }
+            else return Visibility.Collapsed;
         }
 
-        public ReinforceDataView(ReinforceData data, ReinforceType type, string tag)
+        public ReinforceDataView(ItemData data, ReinforceType type, string tag)
         {
-            Data = data;
+            CSOItemData = data;
             CurrentType = type;
-            switch (CurrentType)
+            if(CSOItemData.Item.Infomation != null && CSOItemData.Item.Infomation.Reinforce != null && CSOItemData.ReinforceData != null)
             {
-                case ReinforceType.Damage:
-                    MaximumValue = Data.Reinforce.Damage;
-                    CurrentValue = Data.Damage;
-                    break;
-                case ReinforceType.Accuracy:
-                    MaximumValue = Data.Reinforce.Accuracy;
-                    CurrentValue = Data.Accuracy;
-                    break;
-                case ReinforceType.Rebound:
-                    MaximumValue = Data.Reinforce.Rebound;
-                    CurrentValue = Data.Rebound;
-                    break;
-                case ReinforceType.Weight:
-                    MaximumValue = Data.Reinforce.Weight;
-                    CurrentValue = Data.Weight;
-                    break;
-                case ReinforceType.Repeatedly:
-                    MaximumValue = Data.Reinforce.Repeatedly;
-                    CurrentValue = Data.Repeatedly;
-                    break;
-                case ReinforceType.Ammo:
-                    MaximumValue = Data.Reinforce.Ammo;
-                    CurrentValue = Data.Ammo;
-                    break;
-                case ReinforceType.OverDmg:
-                    MaximumValue = (byte)((Data.Reinforce.OverDmg == null) ? 0 : 1);
-                    CurrentValue = Data.OverDmg;
-                    break;
+                switch (CurrentType)
+                {
+                    case ReinforceType.Damage:
+                        MaximumValue = CSOItemData.Item.Infomation.Reinforce.Damage;
+                        CurrentValue = CSOItemData.ReinforceData.Damage;
+                        break;
+                    case ReinforceType.Accuracy:
+                        MaximumValue = CSOItemData.Item.Infomation.Reinforce.Accuracy;
+                        CurrentValue = CSOItemData.ReinforceData.Accuracy;
+                        break;
+                    case ReinforceType.Rebound:
+                        MaximumValue = CSOItemData.Item.Infomation.Reinforce.Rebound;
+                        CurrentValue = CSOItemData.ReinforceData.Rebound;
+                        break;
+                    case ReinforceType.Weight:
+                        MaximumValue = CSOItemData.Item.Infomation.Reinforce.Weight;
+                        CurrentValue = CSOItemData.ReinforceData.Weight;
+                        break;
+                    case ReinforceType.Repeatedly:
+                        MaximumValue = CSOItemData.Item.Infomation.Reinforce.Repeatedly;
+                        CurrentValue = CSOItemData.ReinforceData.Repeatedly;
+                        break;
+                    case ReinforceType.Ammo:
+                        MaximumValue = CSOItemData.Item.Infomation.Reinforce.Ammo;
+                        CurrentValue = CSOItemData.ReinforceData.Ammo;
+                        break;
+                    case ReinforceType.OverDmg:
+                        MaximumValue = (byte)((CSOItemData.Item.Infomation.Reinforce.OverDmg == null || CSOItemData.Item.Infomation.Reinforce.OverDmg == 0) ? 0 : 1);
+                        CurrentValue = CSOItemData.ReinforceData.OverDmg;
+                        break;
+                }
             }
             TagName = tag;
             CurrentButtonLeft = ButtonLeft[1];

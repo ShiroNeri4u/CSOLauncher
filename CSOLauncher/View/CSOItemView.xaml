@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CSOLauncher.View.CSOItemView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CSOLauncher.View"
+    xmlns:ViewModel="using:CSOLauncher.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Canvas Width="235" Height="134" Background="Transparent">
+        <!--框-->
+        <Image x:Name="Border" Width="235" Height="134" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="1" />
+        <!--武器图片-->
+        <Image x:Name="Weapon" Width="235" Height="81" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="1" />
+        <!--阵营-->
+        <Image x:Name="Team" Width="41" Height="11" Canvas.Left="194" Canvas.Top="10" Canvas.ZIndex="2" />
+        <!--插件-->
+        <StackPanel Orientation="Horizontal" Canvas.Left="5" Canvas.Top="48" Canvas.ZIndex="2" Visibility="{x:Bind ViewModel.PartVisiblity, Mode=OneWay}" >
+            <local:CSOPartView ViewModel="{x:Bind ViewModel.CSOPartViewModel1}" Changed="{x:Bind ViewModel.Changed, Mode=OneWay}" Width="29" Height="29" />
+            <local:CSOPartView ViewModel="{x:Bind ViewModel.CSOPartViewModel2}" Changed="{x:Bind ViewModel.Changed, Mode=OneWay}" Width="29" Height="29" />
+        </StackPanel>
+        <!--强化-->
+        <local:CSOReinforceView ViewModel="{x:Bind ViewModel.CSOReinforceViewModel}" Width="21" Height="21" Visibility="{x:Bind ViewModel.ReinforceVisiblity, Mode=OneWay}" Canvas.Left="{x:Bind ViewModel.ReinforceOffset, Mode=OneWay}" Canvas.Top="60" Canvas.ZIndex="2"/>
+        <!--涂装-->
+        <local:CSOPaintView ViewModel="{x:Bind ViewModel.CSOPaintViewModel}" Width="21" Height="21" Visibility="{x:Bind ViewModel.PaintVisiblity, Mode=OneWay}" Canvas.Left="{x:Bind ViewModel.PaintOffset, Mode=OneWay}" Canvas.Top="60" Canvas.ZIndex="2" />
+        <!--武器底层-->
+        <Rectangle x:Name="Color" Fill="#2b2b2b" Width="231" Height="81" Canvas.Left="2" Canvas.Top="0" Canvas.ZIndex="0" />
+        <Rectangle Fill="#101010" Width="231" Height="52" Canvas.Left="2" Canvas.Top="81" Canvas.ZIndex="0" />
+        <!--武器文字-->
+        <StackPanel Orientation="Horizontal" Canvas.Left="6" Canvas.Top="82" Canvas.ZIndex="1">
+            <Image x:Name="Part" Source="{x:Bind ViewModel:CSOItemViewModel.PartIcon}" Width="15" Height="17" Visibility="{x:Bind ViewModel.PartVisiblity, Mode=OneWay}"/>
+            <TextBlock Text="{x:Bind ViewModel.CSOName, Mode=OneWay}" Foreground="#FFE2BB" FontFamily="Assets\CSO\Font\calibrifzy4jw.ttf#CalibriFZY4JW" CharacterSpacing="50" TextDecorations="Underline" FontStretch="SemiExpanded"  FontSize="13.5" />
+        </StackPanel>
+        <TextBlock x:Name="Data" Text="[无期限]" Foreground="#C0C0C0" FontFamily="Assets\CSO\Font\calibrifzy4jw.ttf#CalibriFZY4JW" CharacterSpacing="50" FontSize="10"  Canvas.Left="6" Canvas.Top="98" Canvas.ZIndex="1" />
+        <!--local:CSOButtonBase Click="{x:Bind SelectFileButton_Click}" ButtonWidth="77" CurrentType="Default" ButtonScale="0.687" ButtonContext="装备" TextColor="#8b7338" Canvas.ZIndex="3" Canvas.Left="177" Canvas.Top="110" /-->
+    </Canvas>
+</UserControl>

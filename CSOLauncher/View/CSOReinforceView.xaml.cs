@@ -4,14 +4,17 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using System.Diagnostics;
 using Windows.Foundation;
 
 namespace CSOLauncher.View
 {
     public sealed partial class CSOReinforceView : UserControl
     {
-        public CSOReinforceViewModel ViewModel;
+        public CSOReinforceViewModel ViewModel
+        {
+            get => (CSOReinforceViewModel)GetValue(ViewModelProperty);
+            set => SetValue(ViewModelProperty, value);
+        }
 
         private double CSOReinforceHorizontalOffset
         {
@@ -38,44 +41,21 @@ namespace CSOLauncher.View
             new PropertyMetadata(null)
         );
 
+        private static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+            nameof(ViewModel),
+            typeof(CSOReinforceViewModel),
+            typeof(CSOReinforceView),
+            new PropertyMetadata(null)
+        );
+
         public CSOReinforceView()
         {
             this.InitializeComponent();
-            ReinforceData data = new()
-            {
-                Damage = 0,
-                Accuracy = 0,
-                Weight = 0,
-                Rebound = 0,
-                Repeatedly = 0,
-                Ammo = 0,
-                OverDmg = 0,
-
-                Reinforce = new()
-                {
-                    TotalMaxLv = 8,
-                    Damage = 5,
-                    Accuracy = 5,
-                    Weight = 5,
-                    Rebound = 5,
-                    Repeatedly = 2,
-                    Ammo = 1,
-                    OverDmg = 20,
-                }
-            };
-            ViewModel = new CSOReinforceViewModel(data)
-            {
-                IsEditorMode = false,
-            };
         }
 
         private void OnPointerEntered(object sender, PointerRoutedEventArgs e)
         {
             ViewModel.CSOReinforceFlyoutIsOpen = true;
-        }
-
-        private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
-        {
         }
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
@@ -84,13 +64,13 @@ namespace CSOLauncher.View
             if (pointerPoint.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 ViewModel.CSOReinforceFlyoutIsOpen = true;
-                ViewModel.IsEditorMode = !ViewModel.IsEditorMode;
+                ViewModel.CSOReinforceEditorMode = true;
             }
         }
 
         private void OnPointerExited(object sender, PointerRoutedEventArgs e)
         {
-            if (ViewModel.IsEditorMode == false)
+            if (ViewModel.CSOReinforceEditorMode == false)
             {
                 ViewModel.CSOReinforceFlyoutIsOpen = false;
             }
@@ -108,7 +88,7 @@ namespace CSOLauncher.View
 
         private void OnPointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (ViewModel.CSOReinforceFlyoutIsOpen && ViewModel.IsEditorMode == false)
+            if (ViewModel.CSOReinforceFlyoutIsOpen && ViewModel.CSOReinforceEditorMode == false)
             {
                 var pointerPoint = e.GetCurrentPoint(this);
                 Point position = pointerPoint.Position;
@@ -124,6 +104,16 @@ namespace CSOLauncher.View
                 //CSOFlyout.CSOPartHorizontalOffset = position.X + CSOPartFlyoutWidth;
                 //CSOFlyout.CSOPartVerticalOffset = position.Y + 1;
                 //}
+            }
+        }
+
+        private void FlyoutPointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            var pointerPoint = e.GetCurrentPoint(sender as UIElement);
+            if (pointerPoint.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
+            {
+                ViewModel.CSOReinforceEditorMode = false;
+                ViewModel.CSOReinforceFlyoutIsOpen = false;
             }
         }
 

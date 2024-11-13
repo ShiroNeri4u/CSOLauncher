@@ -1,26 +1,23 @@
 using CSODataCore;
 using CSOLauncher.ViewModels;
+using Microsoft.UI.Content;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
+using static CSOLauncher.Launcher;
 
 namespace CSOLauncher.View
 {
     public sealed partial class CSOPaintView : UserControl
     {
-        public CSOPaintViewModels ViewModel;
+        public CSOPaintViewModel ViewModel
+        {
+            get => (CSOPaintViewModel)GetValue(ViewModelProperty);
+            set => SetValue(ViewModelProperty, value);
+        }
+
         private double CSOPartHorizontalOffset
         {
             get => (double)GetValue(CSOPartHorizontalOffsetProperty);
@@ -35,11 +32,6 @@ namespace CSOLauncher.View
         public CSOPaintView()
         {
             this.InitializeComponent();
-            ViewModel = new CSOPaintViewModels()
-            {
-                CSOItem = ItemManager.Search(1)[0],
-                CSOPaintItem = ItemManager.Search(744)[0],
-            };
         }
 
         private static readonly DependencyProperty CSOPartHorizontalOffsetProperty = DependencyProperty.Register(
@@ -53,6 +45,13 @@ namespace CSOLauncher.View
             nameof(CSOPartVerticalOffset),
             typeof(double),
             typeof(CSOPartView),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+            nameof(ViewModel),
+            typeof(CSOPaintViewModel),
+            typeof(CSOPaintView),
             new PropertyMetadata(null)
         );
 
@@ -126,7 +125,8 @@ namespace CSOLauncher.View
             if (grid != null)
             {
                 var data = (Item)grid.Tag;
-                ViewModel.CSOPaintItem = data;
+                ViewModel.CSOItemData.Paint = data;
+                ViewModel.Changed?.Invoke();
             }
             ViewModel.CSOPaintEditorIsOpen = false;
         }

@@ -32,6 +32,7 @@ namespace CSOLauncher
         public static readonly Dictionary<string, BitmapImage> ImageResources = [];
         private static readonly List<Task> LoadAssetsTask = [];
         private static readonly string[] Folders = ["Common", "zh-cn"];
+        public static readonly bool AllowReinforceIgnoreMaxLv = true;
         private static string CSOFolder = $@"{Package.Current.InstalledLocation.Path}\Assets\CSO\";
         public static string ResourceDirectory = @"D:\CSNZ\Item";
         private static async Task LoadAssets()
@@ -47,7 +48,7 @@ namespace CSOLauncher
         private async static Task FindTgaUri(string folder)
         {
             List<Task> tasks = [];
-            DirectoryInfo directoryInfo = new DirectoryInfo(folder);
+            DirectoryInfo directoryInfo = new(folder);
             FileInfo[] tgaFiles = directoryInfo.GetFiles("*.tga", SearchOption.AllDirectories);
 
             foreach (FileInfo file in tgaFiles)
@@ -87,6 +88,7 @@ namespace CSOLauncher
             m_window.Activate();
         }
 
+        public delegate void ViewModelPropertyChanged();
         private Window? m_window;
         public static Window FileView = new ();
     }

@@ -44,7 +44,7 @@
     PointerMoved="OnPointerMoved">
 
         <Grid.Background>
-            <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel:CSOPaintViewModels.CSOPaintBackground, Mode=OneWay}"></ImageBrush>
+            <ImageBrush Stretch="None" ImageSource="{x:Bind ViewModel:CSOPaintViewModel.CSOPaintBackground, Mode=OneWay}"></ImageBrush>
         </Grid.Background>
 
         <!--信息浮窗-->
@@ -64,7 +64,7 @@
                 Margin="0,0,0,12"/>
                     <TextBlock
                 Text="{x:Bind ViewModel.CSOPaintDescription, Mode=OneWay}" 
-                Foreground="#a8a8a8" 
+                Foreground="#C0C0C0" 
                 FontFamily="{StaticResource CSOFont}" 
                 CharacterSpacing="50" 
                 FontSize="12.0"

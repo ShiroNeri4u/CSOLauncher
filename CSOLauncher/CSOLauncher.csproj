@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+    <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
     <RootNamespace>CSOLauncher</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x86;x64</Platforms>
-    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &gt;= 8">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; 8">win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &gt;= 9">win-x86;win-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; 9">win10-x86;win10-x64</RuntimeIdentifiers>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
@@ -15,6 +15,7 @@
 	<Nullable>Enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="View\CSOItemView.xaml" />
     <None Remove="View\CSOReinforceView.xaml" />
   </ItemGroup>
 
@@ -50,6 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSODataCore\CSODataCore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="View\CSOItemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\CSOReinforceView.xaml">

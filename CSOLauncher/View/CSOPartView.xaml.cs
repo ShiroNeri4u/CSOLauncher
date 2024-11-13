@@ -5,13 +5,24 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
-using static CSOLauncher.CSOButtonBase;
+using static CSOLauncher.Launcher;
 
 namespace CSOLauncher.View
 {
     public sealed partial class CSOPartView : UserControl
     {
-        public CSOPartViewModel ViewModel;
+        public CSOPartViewModel ViewModel
+        {
+            get => (CSOPartViewModel)GetValue(ViewModelProperty); 
+            set => SetValue(ViewModelProperty, value);
+        }
+
+        public ViewModelPropertyChanged Changed
+        {
+            get => (ViewModelPropertyChanged)GetValue(ChangedProperty);
+            set => SetValue(ChangedProperty, value);
+        }
+
         private double CSOPartHorizontalOffset
         {
             get => (double)GetValue(CSOPartHorizontalOffsetProperty);
@@ -26,11 +37,6 @@ namespace CSOLauncher.View
         public CSOPartView()
         {
             this.InitializeComponent();
-            ViewModel = new CSOPartViewModel()
-            {
-                CSOItem = ItemManager.Search(1)[0],
-                CSOPartItem = ItemManager.EmptyItem,
-            };
         }
 
         private static readonly DependencyProperty CSOPartHorizontalOffsetProperty = DependencyProperty.Register(
@@ -43,6 +49,20 @@ namespace CSOLauncher.View
         private static readonly DependencyProperty CSOPartVerticalOffsetProperty = DependencyProperty.Register(
             nameof(CSOPartVerticalOffset),
             typeof(double),
+            typeof(CSOPartView),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+            nameof(ViewModel),
+            typeof(CSOPartViewModel),
+            typeof(CSOPartView),
+            new PropertyMetadata(null)
+        );
+
+        private static readonly DependencyProperty ChangedProperty = DependencyProperty.Register(
+            nameof(Changed),
+            typeof(ViewModelPropertyChanged),
             typeof(CSOPartView),
             new PropertyMetadata(null)
         );
@@ -118,7 +138,15 @@ namespace CSOLauncher.View
             if (grid != null)
             {
                 var data = (Item)grid.Tag;
-                ViewModel.CSOPartItem = data;
+                if(ViewModel.Slot == CSOPartViewModel.CSOPartSlot.Part1)
+                {
+                    ViewModel.CSOItemData.Part1 = data;
+                }
+                else
+                {
+                    ViewModel.CSOItemData.Part2 = data;
+                }
+                ViewModel.Changed();
             }
             ViewModel.CSOPartEditorIsOpen = false;
         }
