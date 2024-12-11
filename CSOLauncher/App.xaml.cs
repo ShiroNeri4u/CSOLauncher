@@ -32,7 +32,7 @@ namespace CSOLauncher
         public static readonly Dictionary<string, BitmapImage> ImageResources = [];
         private static readonly List<Task> LoadAssetsTask = [];
         private static readonly string[] Folders = ["Common", "zh-cn"];
-        public static readonly bool AllowReinforceIgnoreMaxLv = true;
+        public static readonly bool AllowReinforceIgnoreMaxLv = false;
         private static string CSOFolder = $@"{Package.Current.InstalledLocation.Path}\Assets\CSO\";
         public static string ResourceDirectory = @"D:\CSNZ\Item";
         private static async Task LoadAssets()
@@ -80,7 +80,7 @@ namespace CSOLauncher
             Task task = LoadAssets();
             await task;
             ItemManager.ImportItem(@"D:\CSNZ\Server\Data\item.csv");
-            ItemManager.ImportLanguage(@"D:\CSNZ\Server\Data\cso_na_en.txt");
+            ItemManager.ImportLanguage(@"D:\CSNZ\Item\cso_na_en.txt");
             ItemManager.ImportReinforce(@"D:\CSNZ\Server\Data\ReinforceMaxLv.csv");
             ItemManager.ImportPaints(@"D:\CSNZ\Server\WeaponPaints.json");
             ItemManager.LoadLanguage();
