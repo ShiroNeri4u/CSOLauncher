@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSOLauncher", "CSOLauncher\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSODataCore", "CSODataCore\CSODataCore.csproj", "{464B392F-0064-4843-BAA5-370BB8057006}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSOClient", "CSOHook\CSOClient.csproj", "{31456C9B-496A-4970-83D0-E921617F6C1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSOClient", "CSOClient\CSOClient.csproj", "{31456C9B-496A-4970-83D0-E921617F6C1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
